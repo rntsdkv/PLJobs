@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="PLJobs:jar">
+    <output-path>$PROJECT_DIR$/../work/SERVER/plugins</output-path>
+    <root id="archive" name="PLJobs.jar">
+      <element id="module-output" name="PLJobs" />
+    </root>
+  </artifact>
+</component>

@@ -1,0 +1,30 @@
+name: PLJobs
+main: ru.prisonlife.pljobs.Main
+version: v1.0
+description: Plugin for works
+author: rntsdkv
+commands:
+  gowork:
+    description: Manage with works
+    permission: pljobs.gowork
+    usage: /gowork <cleaner, miner, cook> or /gowork
+  cleanersetpoint:
+    description: Set new garbage spawn point
+    permission: pljobs.cleaner.setpoint
+    usage: /cleaner setpoin
+  cleanerdelpoint:
+    description: Delete garbage spawn point
+    permission: pljobs.cleaner.delpoint
+    usage: /cleaner delpoint <id>
+  cleanerlist:
+    description: List of areas
+    permission: pljobs.cleaner.list
+    usage: /cleaner list
+  setgarbage:
+    description: Click on chest to set garbage!
+    permission: pljobs.cleaner.setgarbage
+    usage: /setgarbage
+  getsalary:
+    description: Get your overdue salary if you kicked from server
+    permission: pljobs.getsalary
+    usage: /getsalary

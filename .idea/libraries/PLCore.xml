@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="PLCore">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../PLCore.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

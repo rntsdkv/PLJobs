@@ -1,6 +1,7 @@
 name: PLJobs
 main: ru.prisonlife.pljobs.Main
 version: v1.0
+depend: [PLCore]
 description: Plugin for works
 author: rntsdkv
 commands:

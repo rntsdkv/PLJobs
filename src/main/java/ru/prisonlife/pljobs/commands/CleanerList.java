@@ -5,10 +5,8 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import ru.prisonlife.plugin.PLPlugin;
-
 import java.util.ArrayList;
 import java.util.List;
-
 import static ru.prisonlife.pljobs.Main.colorize;
 
 public class CleanerList implements CommandExecutor {

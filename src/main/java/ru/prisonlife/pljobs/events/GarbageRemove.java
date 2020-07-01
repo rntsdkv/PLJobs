@@ -1,5 +1,6 @@
 package ru.prisonlife.pljobs.events;
 
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -7,7 +8,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.Plugin;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;

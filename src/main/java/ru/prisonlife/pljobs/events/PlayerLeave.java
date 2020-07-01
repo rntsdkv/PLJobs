@@ -4,13 +4,12 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.plugin.Plugin;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
 
-import static ru.prisonlife.pljobs.Main.playersSalary;
+import static ru.prisonlife.pljobs.Main.*;
 
 public class PlayerLeave implements Listener {
 
@@ -28,6 +27,10 @@ public class PlayerLeave implements Listener {
         if (prisoner.getJob() != Job.NONE) {
             prisoner.setOverdueJobSalary(prisoner.getOverdueJobSalary() + playersSalary.get(player));
             playersSalary.remove(player);
+            prisoner.setJob(Job.NONE);
+            if (getCleanersCount() == 0) {
+                task.cancel();
+            }
         }
     }
 }

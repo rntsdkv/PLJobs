@@ -1,19 +1,19 @@
 package ru.prisonlife.pljobs.events;
 
+
 import org.bukkit.Material;
 import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
-import org.bukkit.plugin.Plugin;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
 
-import static ru.prisonlife.pljobs.Main.garbageCount;
 import static ru.prisonlife.pljobs.Main.playersSalary;
+import static ru.prisonlife.pljobs.Main.garbageCount;
 
 public class GarbagePickup implements Listener {
 

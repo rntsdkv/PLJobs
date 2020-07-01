@@ -6,7 +6,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.plugin.Plugin;
 import ru.prisonlife.plugin.PLPlugin;
 
 import static ru.prisonlife.pljobs.Main.colorize;

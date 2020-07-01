@@ -1,25 +1,28 @@
 package ru.prisonlife.pljobs;
 
-import org.bukkit.*;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
-import ru.prisonlife.pljobs.commands.*;
-import ru.prisonlife.pljobs.events.*;
 import ru.prisonlife.plugin.PLPlugin;
 import ru.prisonlife.util.Pair;
+import ru.prisonlife.pljobs.commands.*;
+import ru.prisonlife.pljobs.events.*;
 
 import java.io.File;
 import java.util.*;
 
 public class Main extends PLPlugin {
 
-    final Random random = new Random();
     public static Map<Player, Integer> playersSalary = new HashMap<>();
     public static Map<Integer, Location> cleanerPoints = new HashMap<>();
     public static Integer garbageCount = 0;
+    public static BukkitTask task;
 
     public String getPluginName() {
         return "PLJobs";
@@ -62,7 +65,7 @@ public class Main extends PLPlugin {
     private void copyConfigFile() {
         File config = new File(getDataFolder() + File.separator + "config.yml");
         if (!config.exists()) {
-            getLogger().info("PLPhones | Default Config copying...");
+            getLogger().info("PLJobs | Default Config copying...");
             getConfig().options().copyDefaults(true);
             saveDefaultConfig();
         }
@@ -84,7 +87,7 @@ public class Main extends PLPlugin {
         }
     }
 
-    private Integer getCleanersCount() {
+    public static Integer getCleanersCount() {
         int count = 0;
 
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -96,23 +99,5 @@ public class Main extends PLPlugin {
         return count;
     }
 
-    BukkitTask task = Bukkit.getScheduler().runTaskTimer(this, new Runnable() {
-        @Override
-        public void run() {
 
-            if (garbageCount < getCleanersCount() * getConfig().getInt("cleaner.garbageCountPerCleaner")) {
-
-                List<Integer> list = new ArrayList<>();
-
-                for (Integer key : cleanerPoints.keySet()) {
-                    list.add(key);
-                }
-
-                int rand = random.nextInt(list.size());
-
-                cleanerPoints.get(list.get(rand)).getWorld().dropItem(cleanerPoints.get(list.get(rand)), new ItemStack(Material.COCOA_BEANS, 1));
-                garbageCount ++;
-            }
-        }
-    }, 0, getConfig().getInt("cleaner.garbageSpawnIntensity"));
 }

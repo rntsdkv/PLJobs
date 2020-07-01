@@ -2,6 +2,7 @@ name: PLJobs
 main: ru.prisonlife.pljobs.Main
 version: v1.0
 depend: [PLCore]
+api-version: 1.13
 description: Plugin for works
 author: rntsdkv
 commands:
@@ -12,15 +13,15 @@ commands:
   cleanersetpoint:
     description: Set new garbage spawn point
     permission: pljobs.cleaner.setpoint
-    usage: /cleaner setpoin
+    usage: /cleanersetpoin
   cleanerdelpoint:
     description: Delete garbage spawn point
     permission: pljobs.cleaner.delpoint
-    usage: /cleaner delpoint <id>
+    usage: /cleanerdelpoint <id>
   cleanerlist:
     description: List of areas
     permission: pljobs.cleaner.list
-    usage: /cleaner list
+    usage: /cleanerlist
   setgarbage:
     description: Click on chest to set garbage!
     permission: pljobs.cleaner.setgarbage

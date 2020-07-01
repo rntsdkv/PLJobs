@@ -55,7 +55,7 @@ public class GoWork implements CommandExecutor {
     private void openWorksGUI(Player player) {
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         if (prisoner.getJob() == Job.NONE) {
-            Inventory inv = Bukkit.createInventory(player, 1, ChatColor.BOLD + "" + ChatColor.GRAY + "Работы");
+            Inventory inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GRAY + "Работы");
             inv.setItem(3, miner(prisoner));
             inv.setItem(5, cleaner(prisoner));
             inv.setItem(7, cook(prisoner));
@@ -63,11 +63,11 @@ public class GoWork implements CommandExecutor {
         } else {
             Inventory inv = null;
             if (prisoner.getJob() == Job.MINER) {
-                inv = Bukkit.createInventory(player, 1, ChatColor.BOLD + "" + ChatColor.GRAY + "Шахтер");
+                inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GRAY + "Шахтер");
             } else if (prisoner.getJob() == Job.CLEANER) {
-                inv = Bukkit.createInventory(player, 1, ChatColor.BOLD + "" + ChatColor.GREEN + "Уборщик");
+                inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GREEN + "Уборщик");
             } else if (prisoner.getJob() == Job.COOK) {
-                inv = Bukkit.createInventory(player, 1, ChatColor.BOLD + "" + ChatColor.GOLD + "Повар");
+                inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GOLD + "Повар");
             }
 
             ItemStack work = new ItemStack(Material.RED_STAINED_GLASS, 1);

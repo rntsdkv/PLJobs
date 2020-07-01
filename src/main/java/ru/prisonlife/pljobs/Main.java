@@ -6,6 +6,7 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
@@ -52,14 +53,15 @@ public class Main extends PLPlugin {
     }
 
     private void registerListeners() {
-        getServer().getPluginManager().registerEvents(new ChestClick(this), this);
-        getServer().getPluginManager().registerEvents(new ChestRemove(this), this);
-        getServer().getPluginManager().registerEvents(new GarbagePickup(this), this);
-        getServer().getPluginManager().registerEvents(new GarbageRemove(this), this);
-        getServer().getPluginManager().registerEvents(new GarbageThrowAway(this), this);
-        getServer().getPluginManager().registerEvents(new InventoryClick(this), this);
-        getServer().getPluginManager().registerEvents(new ItemsDrop(this), this);
-        getServer().getPluginManager().registerEvents(new PlayerLeave(this), this);
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new ChestClick(this), this);
+        pluginManager.registerEvents(new ChestRemove(this), this);
+        pluginManager.registerEvents(new GarbagePickup(this), this);
+        pluginManager.registerEvents(new GarbageRemove(this), this);
+        pluginManager.registerEvents(new GarbageThrowAway(this), this);
+        pluginManager.registerEvents(new InventoryClick(this), this);
+        pluginManager.registerEvents(new ItemsDrop(this), this);
+        pluginManager.registerEvents(new PlayerLeave(this), this);
     }
 
     private void copyConfigFile() {

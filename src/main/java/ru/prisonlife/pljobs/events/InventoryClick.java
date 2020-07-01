@@ -56,7 +56,13 @@ public class InventoryClick implements Listener {
                 InventoryUtil.putItemSlots(player.getInventory(), items);
 
                 playersSalary.remove(player);
-                prisoner.setOverdueJobSalary(0);
+
+                if (prisoner.getJob() == Job.CLEANER) {
+                    if (getCleanersCount() - 1 == 0) {
+                        task.cancel();
+                    }
+                }
+
                 prisoner.setJob(Job.NONE);
                 player.sendMessage(colorize(plugin.getConfig().getString("messages.leaveJob")));
 

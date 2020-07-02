@@ -55,29 +55,29 @@ public class GoWork implements CommandExecutor {
     private void openWorksGUI(Player player) {
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         if (prisoner.getJob() == Job.NONE) {
-            Inventory inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GRAY + "Работы");
-            inv.setItem(3, miner(prisoner));
-            inv.setItem(5, cleaner(prisoner));
-            inv.setItem(7, cook(prisoner));
+            Inventory inv = Bukkit.createInventory(player, 9, "Работы");
+            inv.setItem(2, miner(prisoner));
+            inv.setItem(4, cleaner(prisoner));
+            inv.setItem(6, cook(prisoner));
             player.openInventory(inv);
         } else {
             Inventory inv = null;
             if (prisoner.getJob() == Job.MINER) {
-                inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GRAY + "Шахтер");
+                inv = Bukkit.createInventory(player, 9, "Шахтер");
             } else if (prisoner.getJob() == Job.CLEANER) {
-                inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GREEN + "Уборщик");
+                inv = Bukkit.createInventory(player, 9, "Уборщик");
             } else if (prisoner.getJob() == Job.COOK) {
-                inv = Bukkit.createInventory(player, 9, ChatColor.BOLD + "" + ChatColor.GOLD + "Повар");
+                inv = Bukkit.createInventory(player, 9, "Повар");
             }
 
             ItemStack work = new ItemStack(Material.RED_STAINED_GLASS, 1);
             ItemMeta workMeta = work.getItemMeta();
             workMeta.setDisplayName(ChatColor.BOLD + "" + ChatColor.RED + "Уволиться и получить зарплату");
             List<String> lore = new ArrayList<>();
-            lore.add(ChatColor.GREEN + playersSalary.get(player).toString() + "$ + " + ChatColor.RED + prisoner.getOverdueJobSalary() + "$");
+            lore.add(ChatColor.GREEN + playersSalary.get(player).toString() + "$");
             workMeta.setLore(lore);
             work.setItemMeta(workMeta);
-            inv.setItem(5, work);
+            inv.setItem(4, work);
             player.openInventory(inv);
         }
 
@@ -91,7 +91,8 @@ public class GoWork implements CommandExecutor {
         if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.miner")) {
             lore.add(ChatColor.GREEN + "Устроиться на работу шахтером");
         } else {
-            lore.add(ChatColor.RED + "Чтобы устроиться на эту работу, нужно иметь " + plugin.getConfig().getString("jobLevels.miner") + "+ уровень");
+            lore.add(ChatColor.RED + "Чтобы устроиться на эту работу,");
+            lore.add(ChatColor.RED + "нужно иметь " + plugin.getConfig().getString("jobLevels.miner") + "+ уровень");
         }
         minerMeta.setLore(lore);
         miner.setItemMeta(minerMeta);
@@ -106,7 +107,8 @@ public class GoWork implements CommandExecutor {
         if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.cleaner")) {
             lore.add(ChatColor.GREEN + "Устроиться на работу уборщиком");
         } else {
-            lore.add(ChatColor.RED + "Чтобы устроиться на эту работу, нужно иметь " + plugin.getConfig().getString("jobLevels.cleaner") + "+ уровень");
+            lore.add(ChatColor.RED + "Чтобы устроиться на эту работу,");
+            lore.add(ChatColor.RED + "нужно иметь " + plugin.getConfig().getString("jobLevels.cleaner") + "+ уровень");
         }
         cleanerMeta.setLore(lore);
         cleaner.setItemMeta(cleanerMeta);
@@ -121,7 +123,8 @@ public class GoWork implements CommandExecutor {
         if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.cook")) {
             lore.add(ChatColor.GREEN + "Устроиться на работу поваром");
         } else {
-            lore.add(ChatColor.RED + "Чтобы устроиться на эту работу, нужно иметь " + plugin.getConfig().getString("jobLevels.cook") + "+ уровень");
+            lore.add(ChatColor.RED + "Чтобы устроиться на эту работу,");
+            lore.add(ChatColor.RED + "нужно иметь " + plugin.getConfig().getString("jobLevels.cook") + "+ уровень");
         }
         cookMeta.setLore(lore);
         cook.setItemMeta(cookMeta);

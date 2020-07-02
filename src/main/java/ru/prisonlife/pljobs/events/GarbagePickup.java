@@ -2,11 +2,11 @@ package ru.prisonlife.pljobs.events;
 
 
 import org.bukkit.Material;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityPickupItemEvent;
+import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
@@ -26,9 +26,9 @@ public class GarbagePickup implements Listener {
     public void onGarbagePickup(EntityPickupItemEvent event) {
         Player player = (Player) event.getEntity();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
-        Item item = event.getItem();
+        ItemStack item = event.getItem().getItemStack();
 
-        if (item.getItemStack().getType() == Material.COCOA_BEANS) {
+        if (item.getType() == Material.COCOA_BEANS) {
             if (prisoner.getJob() == Job.CLEANER) {
                 if (playersSalary.containsKey(player)) {
                     playersSalary.replace(player, playersSalary.get(player) + plugin.getConfig().getInt("cleaner.garbagePickup"));
@@ -36,7 +36,15 @@ public class GarbagePickup implements Listener {
                     playersSalary.put(player, plugin.getConfig().getInt("cleaner.garbagePickup"));
                 }
 
-                garbageCount --;
+                garbageCount -= item.getAmount();
+            } else {
+                event.setCancelled(true);
+            }
+        }
+
+        if (item.getType() == Material.PLAYER_HEAD) {
+            if (prisoner.getJob() != Job.CLEANER) {
+                player.getInventory().remove(new ItemStack(Material.PLAYER_HEAD));
             } else {
                 event.setCancelled(true);
             }

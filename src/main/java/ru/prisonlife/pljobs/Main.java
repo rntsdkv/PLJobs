@@ -3,9 +3,7 @@ package ru.prisonlife.pljobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.Job;
@@ -33,11 +31,8 @@ public class Main extends PLPlugin {
         return null;
     }
 
-    public void onCreate() {
-        copyConfigFile();
-    }
-
     public void onEnable() {
+        copyConfigFile();
         registerCommands();
         registerListeners();
         getGarbagePoints();
@@ -62,14 +57,16 @@ public class Main extends PLPlugin {
         pluginManager.registerEvents(new InventoryClick(this), this);
         pluginManager.registerEvents(new ItemsDrop(this), this);
         pluginManager.registerEvents(new PlayerLeave(this), this);
+        pluginManager.registerEvents(new PlayerJoin(this), this);
     }
 
     private void copyConfigFile() {
         File config = new File(getDataFolder() + File.separator + "config.yml");
         if (!config.exists()) {
-            getLogger().info("PLJobs | Default Config copying...");
+            getLogger().info("Default config copying...");
             getConfig().options().copyDefaults(true);
             saveDefaultConfig();
+            getLogger().info("Config copied...");
         }
     }
 

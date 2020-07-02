@@ -12,12 +12,12 @@ cleanerPointCount: 0
 cleaners:
 chests:
 jobLevels:
-  miner: 1
-  cleaner: 2
+  miner: 2
+  cleaner: 1
   cook: 3
 cleaner:
   garbageBreak: 2
   garbagePickup: 1
   garbageAway: 2
   garbageCountPerCleaner: 10
-  garbageSpawnIntensity: 5
+  garbageSpawnIntensity: 10

@@ -25,9 +25,17 @@ public class PlayerLeave implements Listener {
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
         if (prisoner.getJob() != Job.NONE) {
-            prisoner.setOverdueJobSalary(prisoner.getOverdueJobSalary() + playersSalary.get(player));
+            if (prisoner.hasOverdueJobSalary()) {
+                prisoner.setOverdueJobSalary(prisoner.getOverdueJobSalary() + playersSalary.get(player));
+            } else {
+                if (playersSalary.get(player) != 0) {
+                    prisoner.setOverdueJobSalary(playersSalary.get(player));
+                }
+            }
             playersSalary.remove(player);
             prisoner.setJob(Job.NONE);
+            player.getInventory().clear();
+
             if (getCleanersCount() == 0) {
                 task.cancel();
             }

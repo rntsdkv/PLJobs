@@ -28,9 +28,15 @@ public class ChestClick implements Listener {
         if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.CHEST && garbagePlayers.contains(player)) {
-                plugin.getConfig().set("chests." + block.getLocation().toString(), block.getLocation().toString());
-                player.sendMessage(colorize("&l&6Вы установили мусорный бак!"));
-                garbagePlayers.remove(player);
+                String path = "chests." + block.getX() + "&" + block.getY() + "&" + block.getZ();
+                if (plugin.getConfig().getConfigurationSection(path) == null) {
+                    plugin.getConfig().set(path + ".world", block.getWorld().getName());
+                    plugin.getConfig().set(path + ".x", block.getX());
+                    plugin.getConfig().set(path + ".y", block.getX());
+                    plugin.getConfig().set(path + ".z", block.getX());
+                    player.sendMessage(colorize("&l&6Вы установили мусорный бак!"));
+                    garbagePlayers.remove(player);
+                }
             }
         }
     }

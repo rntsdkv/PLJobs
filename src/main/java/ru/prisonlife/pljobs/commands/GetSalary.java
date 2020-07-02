@@ -5,6 +5,7 @@ import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
@@ -33,12 +34,19 @@ public class GetSalary implements CommandExecutor {
             return true;
         }
 
+        if (prisoner.getJob() != Job.NONE) {
+            player.sendMessage(colorize("&l&cВы сможете получить просроченную зарплату после окончания работы!"));
+            return true;
+        }
+
         if (!PrisonLife.getCurrencyManager().canPuttedMoney(player.getInventory(), prisoner.getOverdueJobSalary())) {
             player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughSlots")));
             return true;
         }
 
-        player.getInventory().addItem((ItemStack) PrisonLife.getCurrencyManager().createMoney(prisoner.getOverdueJobSalary()));
+        for (ItemStack item : PrisonLife.getCurrencyManager().createMoney(prisoner.getOverdueJobSalary())) {
+            player.getInventory().addItem(item);
+        }
         player.sendMessage(colorize(plugin.getConfig().getString("messages.getOverdueSalary")));
         return true;
     }

@@ -3,7 +3,6 @@ package ru.prisonlife.pljobs.events;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -30,15 +29,17 @@ public class InventoryClick implements Listener {
     }
 
     final Random random = new Random();
-    FileConfiguration config = plugin.getConfig();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         Player player = (Player) event.getWhoClicked();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
+        String viewTitle = event.getView().getTitle();
+
         // Увольнение
-        if (event.getView().getTitle().equals(ChatColor.BOLD + "" + ChatColor.GRAY + "Шахтер") || event.getView().getTitle().equals(ChatColor.BOLD + "" + ChatColor.GREEN + "Уборщик") || event.getView().getTitle().equals(ChatColor.BOLD + "" + ChatColor.GOLD + "Повар")) {
+        if (viewTitle.equals("Шахтер") || viewTitle.equals("Уборщик") || viewTitle.equals("Повар")) {
+            event.setCancelled(true);
             ItemStack item = event.getCurrentItem();
             if (item.getItemMeta().getDisplayName().equals(ChatColor.BOLD + "" + ChatColor.RED + "Уволиться и получить зарплату")) {
                 player.closeInventory();
@@ -66,63 +67,61 @@ public class InventoryClick implements Listener {
                 }
 
                 prisoner.setJob(Job.NONE);
-                player.sendMessage(colorize(config.getString("messages.leaveJob")));
+                player.sendMessage(colorize(plugin.getConfig().getString("messages.leaveJob")));
 
                 if (PrisonLife.getCurrencyManager().canPuttedMoney(player.getInventory(), overdueAmount + salary)) {
-                    player.getInventory().addItem((ItemStack) PrisonLife.getCurrencyManager().createMoney(overdueAmount + salary));
+                    for (ItemStack itemMoney : PrisonLife.getCurrencyManager().createMoney(overdueAmount + salary)) {
+                        player.getInventory().addItem(itemMoney);
+                    }
+                    prisoner.setOverdueJobSalary(0);
                 } else {
-                    player.sendMessage(colorize(config.getString("messages.notEnoughSlots")));
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughSlots")));
                     prisoner.setOverdueJobSalary(overdueAmount + salary);
                 }
             }
         }
 
         // Присоединение к работам
-        if (event.getView().getTitle().equals(ChatColor.BOLD + "" + ChatColor.GRAY + "Работы")) {
+        if (viewTitle.equals("Работы")) {
+            event.setCancelled(true);
             ItemStack item = event.getCurrentItem();
             if (item.getType() == Material.STONE_PICKAXE) {
 
-                if (prisoner.getLevel() >= config.getInt("jobLevels.miner")) {
-
+                if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.miner")) {
                     prisoner.setJob(Job.MINER);
                     playersSalary.put(player, 0);
-                    player.sendMessage(colorize(config.getString("messages.joinJob")));
-                    player.closeInventory();
-
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.joinJob")));
                 } else {
-
-                    player.sendMessage(colorize(config.getString("messages.notEnoughLevel")));
-                    player.closeInventory();
-
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughLevel")));
                 }
+
+                player.closeInventory();
             } else if (item.getType() == Material.IRON_SHOVEL) {
 
-                if (prisoner.getLevel() >= config.getInt("jobLevels.cleaner")) {
-
+                if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.cleaner")) {
                     prisoner.setJob(Job.CLEANER);
-                    player.sendMessage(colorize(config.getString("messages.joinJob")));
-                    player.closeInventory();
-
+                    playersSalary.put(player, 0);
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.joinJob")));
+                    PrisonLife.savePlayerInventory(prisoner);
+                    player.getInventory().clear();
+                    player.getInventory().addItem(new ItemStack(Material.IRON_SHOVEL, 1));
+                    creatingGarbage();
                 } else {
-
-                    player.sendMessage(colorize(config.getString("messages.notEnoughLevel")));
-                    player.closeInventory();
-
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughLevel")));
                 }
+
+                player.closeInventory();
             } else if (item.getType() == Material.CAKE) {
 
-                if (prisoner.getLevel() >= config.getInt("jobLevels.cook")) {
-
+                if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.cook")) {
                     prisoner.setJob(Job.COOK);
-                    player.sendMessage(colorize(config.getString("messages.joinJob")));
-                    player.closeInventory();
-
+                    playersSalary.put(player, 0);
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.joinJob")));
                 } else {
-
-                    player.sendMessage(colorize(config.getString("messages.notEnoughLevel")));
-                    player.closeInventory();
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughLevel")));
                 }
 
+                player.closeInventory();
             }
         }
 
@@ -134,7 +133,7 @@ public class InventoryClick implements Listener {
                 @Override
                 public void run() {
 
-                    if (garbageCount < getCleanersCount() * config.getInt("cleaner.garbageCountPerCleaner")) {
+                    if (garbageCount < getCleanersCount() * plugin.getConfig().getInt("cleaner.garbageCountPerCleaner")) {
 
                         List<Integer> list = new ArrayList<>();
 
@@ -148,7 +147,7 @@ public class InventoryClick implements Listener {
                         garbageCount ++;
                     }
                 }
-            }, 0, config.getInt("cleaner.garbageSpawnIntensity"));
+            }, 0, plugin.getConfig().getInt("cleaner.garbageSpawnIntensity") * 20);
         }
     }
 }

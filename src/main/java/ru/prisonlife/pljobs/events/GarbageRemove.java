@@ -1,6 +1,7 @@
 package ru.prisonlife.pljobs.events;
 
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
@@ -27,19 +28,22 @@ public class GarbageRemove implements Listener {
         Player player = event.getPlayer();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         Block block = event.getBlock();
-
         if (block.getType() == Material.PLAYER_HEAD) {
-            if (prisoner.getJob() == Job.NONE) {
-                event.setCancelled(true);
-            } else {
+            if (prisoner.getJob() != Job.CLEANER) {
                 Integer amount = plugin.getConfig().getInt("cleaner.garbageBreak");
                 if (PrisonLife.getCurrencyManager().canPuttedMoney(player.getInventory(), amount)) {
-                    player.getInventory().addItem((ItemStack) PrisonLife.getCurrencyManager().createMoney(amount));
+                    for (ItemStack item : PrisonLife.getCurrencyManager().createMoney(amount)) {
+                        player.getInventory().addItem(item);
+                    }
                 } else {
-                    player.sendMessage(colorize("&l&6У вас нет места для денег!"));
                     event.setCancelled(true);
+                    player.sendMessage(colorize("&l&6У вас нет места для денег!"));
                 }
+            } else {
+                event.setCancelled(true);
+                player.sendMessage(colorize("&l&cТебе не хватает мусора?!"));
             }
+
         }
     }
 }

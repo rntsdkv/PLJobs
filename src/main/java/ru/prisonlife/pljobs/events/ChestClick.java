@@ -3,6 +3,7 @@ package ru.prisonlife.pljobs.events;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -29,13 +30,16 @@ public class ChestClick implements Listener {
             Block block = event.getClickedBlock();
             if (block.getType() == Material.CHEST && garbagePlayers.contains(player)) {
                 String path = "chests." + block.getX() + "&" + block.getY() + "&" + block.getZ();
-                if (plugin.getConfig().getConfigurationSection(path) == null) {
-                    plugin.getConfig().set(path + ".world", block.getWorld().getName());
-                    plugin.getConfig().set(path + ".x", block.getX());
-                    plugin.getConfig().set(path + ".y", block.getX());
-                    plugin.getConfig().set(path + ".z", block.getX());
+                FileConfiguration config = plugin.getConfig();
+                if (config.getConfigurationSection(path) == null) {
+                    config.set(path + ".world", block.getWorld().getName());
+                    config.set(path + ".x", block.getX());
+                    config.set(path + ".y", block.getX());
+                    config.set(path + ".z", block.getX());
                     player.sendMessage(colorize("&l&6Вы установили мусорный бак!"));
                     garbagePlayers.remove(player);
+
+                    plugin.saveConfig();
                 }
             }
         }

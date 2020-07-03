@@ -1,7 +1,7 @@
 name: PLJobs
 main: ru.prisonlife.pljobs.Main
 version: v1.0
-depend: [PLCore]
+depend: [PLCore, WorldEdit]
 api-version: 1.13
 description: Plugin for works
 author: rntsdkv

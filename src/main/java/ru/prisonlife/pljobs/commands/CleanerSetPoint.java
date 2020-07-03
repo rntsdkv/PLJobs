@@ -46,6 +46,7 @@ public class CleanerSetPoint implements CommandExecutor {
 
         player.sendMessage(colorize("&l&6Установлен новый спавн мусора №" + config.getString("cleanerPointCount")));
 
+        plugin.saveConfig();
         return true;
     }
 }

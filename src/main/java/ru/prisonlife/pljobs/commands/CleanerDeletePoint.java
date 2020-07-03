@@ -42,6 +42,7 @@ public class CleanerDeletePoint implements CommandExecutor {
         cleanerPoints.remove(Integer.parseInt(strings[0]));
 
         player.sendMessage(colorize("&l&6Точка №" + strings[0] + " удалена!"));
+        plugin.saveConfig();
         return true;
     }
 }

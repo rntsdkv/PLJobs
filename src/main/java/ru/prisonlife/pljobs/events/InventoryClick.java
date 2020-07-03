@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
@@ -90,6 +91,13 @@ public class InventoryClick implements Listener {
                 if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.miner")) {
                     prisoner.setJob(Job.MINER);
                     playersSalary.put(player, 0);
+
+                    PrisonLife.savePlayerInventory(prisoner);
+
+                    Inventory inventory = player.getInventory();
+                    inventory.clear();
+                    inventory.addItem(new ItemStack(Material.IRON_PICKAXE, 1));
+
                     player.sendMessage(colorize(plugin.getConfig().getString("messages.joinJob")));
                 } else {
                     player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughLevel")));
@@ -101,11 +109,15 @@ public class InventoryClick implements Listener {
                 if (prisoner.getLevel() >= plugin.getConfig().getInt("jobLevels.cleaner")) {
                     prisoner.setJob(Job.CLEANER);
                     playersSalary.put(player, 0);
-                    player.sendMessage(colorize(plugin.getConfig().getString("messages.joinJob")));
+
                     PrisonLife.savePlayerInventory(prisoner);
+
                     player.getInventory().clear();
                     player.getInventory().addItem(new ItemStack(Material.IRON_SHOVEL, 1));
+
                     creatingGarbage();
+
+                    player.sendMessage(colorize(plugin.getConfig().getString("messages.joinJob")));
                 } else {
                     player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughLevel")));
                 }

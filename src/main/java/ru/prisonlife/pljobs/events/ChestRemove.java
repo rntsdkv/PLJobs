@@ -2,6 +2,7 @@ package ru.prisonlife.pljobs.events;
 
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -22,9 +23,11 @@ public class ChestRemove implements Listener {
         Block block = event.getBlock();
         Player player = event.getPlayer();
         if (block.getType() == Material.CHEST) {
-            if (plugin.getConfig().getConfigurationSection("chest." + block.getLocation().toString()) != null) {
-                plugin.getConfig().set("chest." + block.getLocation().toString(), null);
+            FileConfiguration config = plugin.getConfig();
+            if (config.getConfigurationSection("chest." + block.getLocation().toString()) != null) {
+                config.set("chest." + block.getLocation().toString(), null);
                 player.sendMessage(colorize("&l&6Вы убрали мусорный бак!"));
+                plugin.saveConfig();
             }
         }
     }

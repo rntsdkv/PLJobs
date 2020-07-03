@@ -3,11 +3,14 @@ package ru.prisonlife.pljobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
+import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
 import ru.prisonlife.util.Pair;
 import ru.prisonlife.pljobs.commands.*;
@@ -31,11 +34,70 @@ public class Main extends PLPlugin {
         return null;
     }
 
+    @Override
     public void onEnable() {
         copyConfigFile();
         registerCommands();
         registerListeners();
+        resetAfterReload();
         getGarbagePoints();
+    }
+
+    @Override
+    public void onDisable() {
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+            Prisoner prisoner = PrisonLife.getPrisoner(player);
+            if (prisoner.getJob() == Job.CLEANER) {
+                getConfig().set("save.jobs." + prisoner.getAccountNumber(), "cleaner");
+            } else if (prisoner.getJob() == Job.MINER) {
+                getConfig().set("save.jobs." + prisoner.getAccountNumber(), "miner");
+            } else if (prisoner.getJob() == Job.COOK) {
+                getConfig().set("save.jobs." + prisoner.getAccountNumber(), "cook");
+            }
+        }
+
+        for (Player player : playersSalary.keySet()) {
+            getConfig().set("save.salaries." + player.getName(), playersSalary.get(player));
+        }
+
+        getConfig().set("save.garbages", garbageCount);
+
+        saveConfig();
+    }
+
+    private void resetAfterReload() {
+        if (getConfig().getConfigurationSection("save") != null) {
+            ConfigurationSection section = getConfig().getConfigurationSection("save.jobs");
+            if (section != null) {
+                for (String number : section.getKeys(false)) {
+                    String string = getConfig().getString("save.jobs." + number);
+                    int account = Integer.parseInt(number);
+                    if (string.equals("cleaner")) {
+                        PrisonLife.getPrisoner(account).setJob(Job.CLEANER);
+                    } else if (string.equals("miner")) {
+                        PrisonLife.getPrisoner(account).setJob(Job.MINER);
+                    } else if (string.equals("cook")) {
+                        PrisonLife.getPrisoner(account).setJob(Job.COOK);
+                    }
+
+                }
+            }
+
+            section = getConfig().getConfigurationSection("save.salaries");
+            if (section != null) {
+                for (String nickname : section.getKeys(false)) {
+                    playersSalary.put(Bukkit.getPlayer(nickname), getConfig().getInt("save.salaries." + nickname));
+                }
+            }
+
+            section = getConfig().getConfigurationSection("save.garbages");
+            if (section != null) {
+                garbageCount = getConfig().getInt("save.garbages");
+            }
+
+            getConfig().set("save", null);
+            saveConfig();
+        }
     }
 
     private void registerCommands() {

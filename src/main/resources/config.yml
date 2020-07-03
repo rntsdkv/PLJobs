@@ -11,6 +11,8 @@ messages:
   selectionNotExists: "&l&cНужно выделить территорию!"
   newMiner: "&l&6Новая шахта под названием %name% создана!"
   minerIsAlreadyExists: "&l&6Шахта с таким именем уже существует!"
+  pos1Add: "&l&6Вы установили первую точку!"
+  pos2Add: "&l&6Вы установили вторую точку!"
 cleanerPointCount: 0
 cleaners:
 chests:

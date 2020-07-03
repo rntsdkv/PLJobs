@@ -30,3 +30,6 @@ commands:
     description: Get your overdue salary if you kicked from server
     permission: pljobs.getsalary
     usage: /getsalary
+  miner:
+    description: Miners manager
+    permission: pljobs.miner

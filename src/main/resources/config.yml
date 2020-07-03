@@ -16,7 +16,9 @@ messages:
   pos2Add: "&l&6Вы установили вторую точку!"
   timeSet: "&l&6Вы установили время!"
   pointSet: "&l&6Вы установили точку спавна!"
+  blocksSet: "&l&6Блоки шахты установлены!"
   minerDeleted: "&l&6Шахта была удалена!"
+  prSumMustBe100: "&l&cНеправильные данные: общая сумма должна быть 100%"
 cleanerPointCount: 0
 cleaners:
 chests:

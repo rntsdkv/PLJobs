@@ -11,7 +11,9 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import ru.prisonlife.plugin.PLPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static ru.prisonlife.pljobs.Main.colorize;
@@ -46,6 +48,8 @@ public class Miner implements CommandExecutor  {
                 minerSetPoint(commandSender, strings, config);
             } else if (strings[0].equals("delete")) {
                 minerDelete(commandSender, strings, config);
+            } else if (strings[0].equals("set")) {
+                minerSet(commandSender, strings, config);
             }
         }
         return true;
@@ -225,6 +229,45 @@ public class Miner implements CommandExecutor  {
         sender.sendMessage(colorize(config.getString("messages.minerDeleted")));
 
         // TODO также сделать удаление из локальной переменной и таском в будущем
+        return true;
+    }
+
+    private boolean minerSet(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (strings.length < 3) {
+            sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
+            return true;
+        }
+
+        String name = strings[1];
+
+        if (config.getConfigurationSection("miners." + name) == null) {
+            sender.sendMessage(colorize(config.getString("messages.minerNotExists")));
+            return true;
+        }
+
+        int pr_sum = 0;
+
+        for (int i = 2; i < strings.length; i++) {
+            int pr = Integer.parseInt(strings[i].split(":")[1]);
+            pr_sum += pr;
+        }
+
+        if (pr_sum != 100) {
+            sender.sendMessage(colorize(config.getString("messages.prSumMustBe100")));
+            return true;
+        }
+
+        for (int i = 2; i < strings.length; i++) {
+            String id = strings[i].split(":")[0];
+            int pr = Integer.parseInt(strings[i].split(":")[1]);
+            config.set("miners." + name + ".blocks." + id, pr);
+        }
+
+        if (config.getConfigurationSection("miners." + name + ".blocks") != null) {
+            config.set("miners." + name + ".blocks", null);
+        }
+        sender.sendMessage(colorize(config.getString("messages.blocksSet")));
+        plugin.saveConfig();
         return true;
     }
 

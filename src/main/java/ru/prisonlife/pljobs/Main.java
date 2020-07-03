@@ -26,6 +26,7 @@ public class Main extends PLPlugin {
     public static Map<Integer, Location> cleanerPoints = new HashMap<>();
     public static Integer garbageCount = 0;
     public static BukkitTask task;
+    public static BukkitTask taskMine;
 
     public String getPluginName() {
         return "PLJobs";

@@ -16,6 +16,7 @@ messages:
   pos2Add: "&l&6Вы установили вторую точку!"
   timeSet: "&l&6Вы установили время!"
   pointSet: "&l&6Вы установили точку спавна!"
+  minerDeleted: "&l&6Шахта была удалена!"
 cleanerPointCount: 0
 cleaners:
 chests:

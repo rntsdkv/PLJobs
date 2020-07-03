@@ -44,6 +44,8 @@ public class Miner implements CommandExecutor  {
                 minerTimer(commandSender, strings, config);
             } else if (strings[0].equals("setpoint")) {
                 minerSetPoint(commandSender, strings, config);
+            } else if (strings[0].equals("delete")) {
+                minerDelete(commandSender, strings, config);
             }
         }
         return true;
@@ -203,6 +205,26 @@ public class Miner implements CommandExecutor  {
 
         player.sendMessage(colorize(config.getString("messages.pointSet")));
         plugin.saveConfig();
+        return true;
+    }
+
+    private boolean minerDelete(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (strings.length != 2) {
+            sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
+            return false;
+        }
+
+        String name = strings[1];
+
+        if (config.getConfigurationSection("miners." + name) == null) {
+            sender.sendMessage(colorize(config.getString("messages.minerNotExists")));
+            return true;
+        }
+
+        config.set("miners." + name, null);
+        sender.sendMessage(colorize(config.getString("messages.minerDeleted")));
+
+        // TODO также сделать удаление из локальной переменной и таском в будущем
         return true;
     }
 

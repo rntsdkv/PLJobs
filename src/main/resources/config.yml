@@ -8,6 +8,8 @@ messages:
   leaveJob: "&l&6Вы уволились ПСЖ!"
   joinJob: "&l&6Вы устроились на работу!"
   notEnoughLevel: "&6&lУ вас недостаточный уровень, чтобы устроиться на эту работу!"
+  selectionNotExists: "&l&cНужно выделить территорию!"
+  newMiner: "&l&6Новая шахта под названием %name% создана!"
 cleanerPointCount: 0
 cleaners:
 chests:

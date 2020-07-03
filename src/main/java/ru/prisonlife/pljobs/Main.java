@@ -1,11 +1,12 @@
 package ru.prisonlife.pljobs;
 
+import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.Job;
@@ -107,6 +108,7 @@ public class Main extends PLPlugin {
         getCommand("getsalary").setExecutor(new GetSalary(this));
         getCommand("gowork").setExecutor(new GoWork(this));
         getCommand("setgarbage").setExecutor(new SetGarbage(this));
+        getCommand("miner").setExecutor(new Miner(this));
     }
 
     private void registerListeners() {

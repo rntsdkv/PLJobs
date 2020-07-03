@@ -1,11 +1,8 @@
 package ru.prisonlife.pljobs.commands;
 
 import com.sk89q.worldedit.bukkit.WorldEditPlugin;
-import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
-import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,10 +35,15 @@ public class Miner implements CommandExecutor  {
     public boolean onCommand(CommandSender commandSender, Command command, String s, String[] strings) {
         FileConfiguration config = plugin.getConfig();
         if (strings.length > 0) {
+
             if (strings[0].equals("pos1") || strings[0].equals("pos2")) {
                 minerPosition(commandSender, strings, config);
             } else if (strings[0].equals("create")) {
                 minerCreate(commandSender, strings, config);
+            } else if (strings[0].equals("timer")) {
+                minerTimer(commandSender, strings, config);
+            } else if (strings[0].equals("setpoint")) {
+                minerSetPoint(commandSender, strings, config);
             }
         }
         return true;
@@ -124,7 +126,7 @@ public class Miner implements CommandExecutor  {
          Selection selection = new CuboidSelection(player.getWorld(), pos1, pos2);
          */
 
-        String world = selection.getWorld().getName();
+        String world = player.getWorld().getName();
 
         int x1 = pos1.getBlockX();
         int y1 = pos1.getBlockY();
@@ -144,11 +146,62 @@ public class Miner implements CommandExecutor  {
         config.set("miners." + name + ".2.y", y2);
         config.set("miners." + name + ".2.z", z2);
 
-        config.set("miners." + name + ".point.x", 0);
-        config.set("miners." + name + ".point.y", 0);
-        config.set("miners." + name + ".point.z", 0);
-
         player.sendMessage(colorize("messages.newMiner").replace("%name%", name));
+        plugin.saveConfig();
+        return true;
+    }
+
+    private boolean minerTimer(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (strings.length != 3) {
+            sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
+            return false;
+        }
+
+        String name = strings[1];
+        int time = Integer.parseInt(strings[2]);
+
+        if (config.getConfigurationSection("miners." + name) == null) {
+            sender.sendMessage(colorize(config.getString("messages.minerNotExists")));
+            return true;
+        }
+
+        config.set("miners." + name + ".time", time);
+
+        sender.sendMessage(colorize("messages.timeSet"));
+        plugin.saveConfig();
+        return true;
+    }
+
+    private boolean minerSetPoint(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(config.getString("messages.wrongSender"));
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        if (strings.length != 2) {
+            player.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
+            return false;
+        }
+
+        String name = strings[1];
+
+        if (config.getConfigurationSection("miners." + name) == null) {
+            sender.sendMessage(colorize(config.getString("messages.minerNotExists")));
+            return true;
+        }
+
+        Location location = player.getLocation();
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        config.set("miners." + name + ".point.x", x);
+        config.set("miners." + name + ".point.x", y);
+        config.set("miners." + name + ".point.x", z);
+
+        player.sendMessage(colorize(config.getString("messages.pointSet")));
         plugin.saveConfig();
         return true;
     }

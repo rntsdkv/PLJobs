@@ -11,8 +11,11 @@ messages:
   selectionNotExists: "&l&cНужно выделить территорию!"
   newMiner: "&l&6Новая шахта под названием %name% создана!"
   minerIsAlreadyExists: "&l&6Шахта с таким именем уже существует!"
+  minerNotExists: "&l&6Шахты с таким именем не существует!"
   pos1Add: "&l&6Вы установили первую точку!"
   pos2Add: "&l&6Вы установили вторую точку!"
+  timeSet: "&l&6Вы установили время!"
+  pointSet: "&l&6Вы установили точку спавна!"
 cleanerPointCount: 0
 cleaners:
 chests:

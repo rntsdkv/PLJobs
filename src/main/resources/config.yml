@@ -10,6 +10,7 @@ messages:
   notEnoughLevel: "&6&lУ вас недостаточный уровень, чтобы устроиться на эту работу!"
   selectionNotExists: "&l&cНужно выделить территорию!"
   newMiner: "&l&6Новая шахта под названием %name% создана!"
+  minerIsAlreadyExists: "&l&6Шахта с таким именем уже существует!"
 cleanerPointCount: 0
 cleaners:
 chests:

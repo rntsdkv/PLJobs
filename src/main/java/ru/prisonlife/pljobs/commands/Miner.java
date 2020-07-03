@@ -50,6 +50,11 @@ public class Miner implements CommandExecutor  {
 
         String name = strings[1];
 
+        if (config.getConfigurationSection("miners." + name) != null) {
+            player.sendMessage(colorize("messages.minerIsAlreadyExists"));
+            return true;
+        }
+
         Selection selection = getWorldEdit().getSelection(player);
 
         if (selection == null) {

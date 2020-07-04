@@ -60,8 +60,8 @@ public class JobGuiListener implements Listener {
                 playersSalary.remove(player);
 
                 if (prisoner.getJob() == Job.CLEANER) {
-                    if (getCleanersCount() - 1 == 0) {
-                        task.cancel();
+                    if (getWorkerCount("cleaner") - 1 == 0) {
+                        taskGarbages.cancel();
                     }
                 }
 
@@ -138,10 +138,10 @@ public class JobGuiListener implements Listener {
     }
 
     private void creatingGarbage() {
-        if (getCleanersCount() == 1) {
+        if (getWorkerCount("cleaner") == 1) {
             taskGarbages = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 
-                if (garbageCount < getCleanersCount() * plugin.getConfig().getInt("cleaner.garbageCountPerCleaner")) {
+                if (garbageCount < getWorkerCount("cleaner") * plugin.getConfig().getInt("cleaner.garbageCountPerCleaner")) {
 
                     List<Integer> list = new ArrayList<>();
 

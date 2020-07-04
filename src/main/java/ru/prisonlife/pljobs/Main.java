@@ -26,11 +26,7 @@ public class Main extends PLPlugin {
     public static Integer garbageCount = 0;
     public static BukkitTask taskGarbages;
 
-    public static List<String> minerNames = new ArrayList<>();
-    public static Map<String, World> minerWorld = new HashMap<>();
-    public static Map<String, Integer> minerReloadTime = new HashMap<>();
     public static Map<String, Integer> minerTime = new HashMap<>();
-    public static Map<String, Integer> minerPoint = new HashMap<>();
     public static BukkitTask taskMine;
 
     @Override
@@ -51,6 +47,13 @@ public class Main extends PLPlugin {
         registerListeners();
         loadInfo();
         getGarbagePoints();
+        taskMine = Bukkit.getScheduler().runTaskTimer(this, () -> {
+            for (String name : getConfig().getConfigurationSection("miners").getKeys(false)) {
+                if (minerTime.containsKey(name)) {
+                    minerTime.put(name, minerTime.get(name) + 1);
+                }
+            }
+        }, 0, 20);
     }
 
     @Override
@@ -127,10 +130,10 @@ public class Main extends PLPlugin {
             }
         }
         getConfig().set("jobs", null);
-        if (getCleanersCount() > 0) {
+        if (getWorkerCount("cleaner") > 0) {
             taskGarbages = Bukkit.getScheduler().runTaskTimer(this, () -> {
 
-                if (garbageCount < getCleanersCount() * getConfig().getInt("cleaner.garbageCountPerCleaner")) {
+                if (garbageCount < getWorkerCount("cleaner") * getConfig().getInt("cleaner.garbageCountPerCleaner")) {
 
                     List<Integer> list = new ArrayList<>();
 
@@ -233,12 +236,14 @@ public class Main extends PLPlugin {
         }
     }
 
-    public static Integer getCleanersCount() {
+    public static Integer getWorkerCount(String job) {
         int count = 0;
 
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            if (PrisonLife.getPrisoner(player).getJob() == Job.CLEANER) {
-                count ++;
+        if (job.equals("cleaner")) {
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                if (PrisonLife.getPrisoner(player).getJob() == Job.CLEANER) {
+                    count++;
+                }
             }
         }
 

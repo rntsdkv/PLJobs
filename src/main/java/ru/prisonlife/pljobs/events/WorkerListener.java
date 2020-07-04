@@ -49,8 +49,8 @@ public class WorkerListener implements Listener {
             prisoner.setJob(Job.NONE);
             player.getInventory().clear();
 
-            if (getCleanersCount() == 0) {
-                task.cancel();
+            if (getWorkerCount("cleaner") == 0) {
+                taskGarbages.cancel();
             }
         }
     }

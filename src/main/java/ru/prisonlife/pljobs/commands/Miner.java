@@ -291,9 +291,31 @@ public class Miner implements CommandExecutor  {
 
         if (!minerTime.containsKey(name)) {
             minerTime.put(name, config.getInt("miners." + name + ".time") - 1);
-            sender.sendMessage("Шахта успешно выключена!");
+            sender.sendMessage("Шахта успешно включена!");
         } else {
+            sender.sendMessage("Шахта итак работает!");
+        }
+        return true;
+    }
+
+    private boolean minerOn(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (strings.length != 2) {
+            sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
+            return false;
+        }
+
+        String name = strings[1];
+
+        if (config.getConfigurationSection("miners." + name) == null) {
+            sender.sendMessage(colorize(config.getString("messages.minerNotExists")));
+            return true;
+        }
+
+        if (!minerTime.containsKey(name)) {
             sender.sendMessage("Шахта итак не работает!");
+        } else {
+            minerTime.remove(name);
+            sender.sendMessage("Шахта успешно выключена!");
         }
         return true;
     }

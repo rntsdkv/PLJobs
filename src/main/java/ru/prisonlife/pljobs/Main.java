@@ -77,60 +77,115 @@ public class Main extends PLPlugin {
 
         getConfig().set("garbages", garbageCount);
 
+        if (!cleanerPoints.isEmpty()) {
+            for (Integer point : cleanerPoints.keySet()) {
+                World world = cleanerPoints.get(point).getWorld();
+                int x = cleanerPoints.get(point).getBlockX();
+                int y = cleanerPoints.get(point).getBlockY();
+                int z = cleanerPoints.get(point).getBlockZ();
+
+                getConfig().set("cleaners." + point.toString() + ".world", world.getName());
+                getConfig().set("cleaners." + point.toString() + ".x", x);
+                getConfig().set("cleaners." + point.toString() + ".y", y);
+                getConfig().set("cleaners." + point.toString() + ".z", z);
+            }
+        }
+
+        if (!garbageChests.isEmpty()) {
+            for (Location garbage : garbageChests) {
+                World world = garbage.getWorld();
+                int x = garbage.getBlockX();
+                int y = garbage.getBlockY();
+                int z = garbage.getBlockZ();
+
+                String name = String.format("%d&%d&%d", x, y, z);
+
+                getConfig().set("garbageChests." + name + ".world", world.getName());
+                getConfig().set("garbageChests." + name + ".x", x);
+                getConfig().set("garbageChests." + name + ".y", y);
+                getConfig().set("garbageChests." + name + ".z", z);
+            }
+        }
+
         saveConfig();
     }
 
     private void loadInfo() {
-        if (getConfig().getConfigurationSection("save") != null) {
-            ConfigurationSection section = getConfig().getConfigurationSection("jobs");
-            if (section != null) {
-                for (String number : section.getKeys(false)) {
-                    String string = getConfig().getString("jobs." + number);
-                    int account = Integer.parseInt(number);
-                    if (string.equals("cleaner")) {
-                        PrisonLife.getPrisoner(account).setJob(Job.CLEANER);
-                    } else if (string.equals("miner")) {
-                        PrisonLife.getPrisoner(account).setJob(Job.MINER);
-                    } else if (string.equals("cook")) {
-                        PrisonLife.getPrisoner(account).setJob(Job.COOK);
-                    }
-
+        ConfigurationSection section = getConfig().getConfigurationSection("jobs");
+        if (section != null) {
+            for (String number : section.getKeys(false)) {
+                String string = getConfig().getString("jobs." + number);
+                int account = Integer.parseInt(number);
+                if (string.equals("cleaner")) {
+                    PrisonLife.getPrisoner(account).setJob(Job.CLEANER);
+                } else if (string.equals("miner")) {
+                    PrisonLife.getPrisoner(account).setJob(Job.MINER);
+                } else if (string.equals("cook")) {
+                    PrisonLife.getPrisoner(account).setJob(Job.COOK);
                 }
+
             }
-            if (getCleanersCount() > 0) {
-                taskGarbages = Bukkit.getScheduler().runTaskTimer(this, () -> {
-
-                    if (garbageCount < getCleanersCount() * getConfig().getInt("cleaner.garbageCountPerCleaner")) {
-
-                        List<Integer> list = new ArrayList<>();
-
-                        for (Integer key : cleanerPoints.keySet()) {
-                            list.add(key);
-                        }
-
-                        int rand = new Random().nextInt(list.size());
-
-                        cleanerPoints.get(list.get(rand)).getWorld().dropItem(cleanerPoints.get(list.get(rand)), new ItemStack(Material.COCOA_BEANS, 1));
-                        garbageCount ++;
-                    }
-                }, 0, getConfig().getInt("cleaner.garbageSpawnIntensity") * 20);
-            }
-
-            section = getConfig().getConfigurationSection("save.salaries");
-            if (section != null) {
-                for (String nickname : section.getKeys(false)) {
-                    playersSalary.put(Bukkit.getPlayer(nickname), getConfig().getInt("save.salaries." + nickname));
-                }
-            }
-
-            section = getConfig().getConfigurationSection("save.garbages");
-            if (section != null) {
-                garbageCount = getConfig().getInt("save.garbages");
-            }
-
-            getConfig().set("save", null);
-            saveConfig();
         }
+        getConfig().set("jobs", null);
+        if (getCleanersCount() > 0) {
+            taskGarbages = Bukkit.getScheduler().runTaskTimer(this, () -> {
+
+                if (garbageCount < getCleanersCount() * getConfig().getInt("cleaner.garbageCountPerCleaner")) {
+
+                    List<Integer> list = new ArrayList<>();
+
+                    for (Integer key : cleanerPoints.keySet()) {
+                        list.add(key);
+                    }
+
+                    int rand = new Random().nextInt(list.size());
+
+                    cleanerPoints.get(list.get(rand)).getWorld().dropItem(cleanerPoints.get(list.get(rand)), new ItemStack(Material.COCOA_BEANS, 1));
+                    garbageCount ++;
+                }
+            }, 0, getConfig().getInt("cleaner.garbageSpawnIntensity") * 20);
+        }
+
+        section = getConfig().getConfigurationSection("salaries");
+        if (section != null) {
+            for (String nickname : section.getKeys(false)) {
+                playersSalary.put(Bukkit.getPlayer(nickname), getConfig().getInt("salaries." + nickname));
+            }
+        }
+        getConfig().set("salaries", null);
+
+        section = getConfig().getConfigurationSection("garbages");
+        if (section != null) {
+            garbageCount = getConfig().getInt("garbages");
+        }
+        getConfig().set("garbages", null);
+
+        section = getConfig().getConfigurationSection("garbageChests");
+        if (section != null) {
+            for (String id : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("garbageChests." + id + ".world"));
+                int x = getConfig().getInt("garbageChests." + id + ".x");
+                int y = getConfig().getInt("garbageChests." + id + ".y");
+                int z = getConfig().getInt("garbageChests." + id + ".z");
+                garbageChests.add(new Location(world, x, y, z));
+            }
+        }
+        getConfig().set("garbageChests", null);
+
+        section = getConfig().getConfigurationSection("cleaners");
+        if (section != null) {
+            for (String id : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("cleaners." + id + ".world"));
+                int x = getConfig().getInt("cleaners." + id + ".x");
+                int y = getConfig().getInt("cleaners." + id + ".y");
+                int z = getConfig().getInt("cleaners." + id + ".z");
+
+                cleanerPoints.put(Integer.parseInt(id), new Location(world, x, y, z));
+            }
+        }
+        getConfig().set("garbageChests", null);
+
+        saveConfig();
     }
 
     private void registerCommands() {

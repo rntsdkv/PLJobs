@@ -51,7 +51,7 @@ public class Main extends PLPlugin {
         copyConfigFile();
         registerCommands();
         registerListeners();
-        resetAfterReload();
+        loadInfo();
         getGarbagePoints();
     }
 
@@ -77,7 +77,7 @@ public class Main extends PLPlugin {
         saveConfig();
     }
 
-    private void resetAfterReload() {
+    private void loadInfo() {
         if (getConfig().getConfigurationSection("save") != null) {
             ConfigurationSection section = getConfig().getConfigurationSection("save.jobs");
             if (section != null) {

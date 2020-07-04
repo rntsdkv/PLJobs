@@ -57,22 +57,27 @@ public class Main extends PLPlugin {
 
     @Override
     public void onDisable() {
-        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-            Prisoner prisoner = PrisonLife.getPrisoner(player);
-            if (prisoner.getJob() == Job.CLEANER) {
-                getConfig().set("save.jobs." + prisoner.getAccountNumber(), "cleaner");
-            } else if (prisoner.getJob() == Job.MINER) {
-                getConfig().set("save.jobs." + prisoner.getAccountNumber(), "miner");
-            } else if (prisoner.getJob() == Job.COOK) {
-                getConfig().set("save.jobs." + prisoner.getAccountNumber(), "cook");
+        Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
+        if (!players.isEmpty()) {
+            for (Player player : players) {
+                Prisoner prisoner = PrisonLife.getPrisoner(player);
+                if (prisoner.getJob() == Job.CLEANER) {
+                    getConfig().set("jobs." + prisoner.getAccountNumber(), "cleaner");
+                } else if (prisoner.getJob() == Job.MINER) {
+                    getConfig().set("jobs." + prisoner.getAccountNumber(), "miner");
+                } else if (prisoner.getJob() == Job.COOK) {
+                    getConfig().set("jobs." + prisoner.getAccountNumber(), "cook");
+                }
             }
         }
 
-        for (Player player : playersSalary.keySet()) {
-            getConfig().set("save.salaries." + player.getName(), playersSalary.get(player));
+        if (!playersSalary.isEmpty()) {
+            for (Player player : playersSalary.keySet()) {
+                getConfig().set("salaries." + player.getName(), playersSalary.get(player));
+            }
         }
 
-        getConfig().set("save.garbages", garbageCount);
+        getConfig().set("garbages", garbageCount);
 
         saveConfig();
     }

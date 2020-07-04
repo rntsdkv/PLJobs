@@ -12,11 +12,6 @@ import ru.prisonlife.plugin.PLPlugin;
 
 public class ItemsDrop implements Listener {
 
-    private PLPlugin plugin;
-    public ItemsDrop(PLPlugin main) {
-        this.plugin = main;
-    }
-
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
         Item item = event.getItemDrop();

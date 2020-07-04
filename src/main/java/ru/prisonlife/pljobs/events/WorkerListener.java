@@ -3,24 +3,37 @@ package ru.prisonlife.pljobs.events;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
+import ru.prisonlife.database.json.ItemSlot;
 import ru.prisonlife.plugin.PLPlugin;
+import ru.prisonlife.util.InventoryUtil;
+
+import java.util.List;
 
 import static ru.prisonlife.pljobs.Main.*;
 
-public class PlayerLeave implements Listener {
+/**
+ * @author rntsdkv
+ * @project PLJobs
+ */
 
-    private PLPlugin plugin;
+public class WorkerListener implements Listener {
 
-    public PlayerLeave(PLPlugin main) {
-        this.plugin = main;
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+        Prisoner prisoner = PrisonLife.getPrisoner(player);
+
+        List<ItemSlot> items = PrisonLife.getStoredInventory(prisoner.getAccountNumber());
+        InventoryUtil.putItemSlots(player.getInventory(), items);
     }
 
     @EventHandler
-    public void onPlayerLeave(PlayerQuitEvent event) {
+    public void onQuit(PlayerQuitEvent event) {
         Player player = event.getPlayer();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 

@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import ru.prisonlife.plugin.PLPlugin;
 
@@ -17,11 +18,11 @@ import java.util.Optional;
 import static ru.prisonlife.pljobs.Main.colorize;
 import static ru.prisonlife.pljobs.commands.SetGarbage.garbagePlayers;
 
-public class ChestClick implements Listener {
+public class ChestCleanerListener implements Listener {
 
     private final PLPlugin plugin;
 
-    public ChestClick(PLPlugin plugin) {
+    public ChestCleanerListener(PLPlugin plugin) {
         this.plugin = plugin;
     }
 
@@ -45,5 +46,23 @@ public class ChestClick implements Listener {
         garbagePlayers.remove(player);
 
         plugin.saveConfig();
+    }
+
+    @EventHandler
+    public void onChestRemove(BlockBreakEvent event) {
+        Block block = event.getBlock();
+        Player player = event.getPlayer();
+        FileConfiguration config = plugin.getConfig();
+
+        if (block.getType() != Material.CHEST) return;
+        else if (!hasChestDataInConfig(config, block)) return;
+
+        config.set("chest." + block.getLocation().toString(), null);
+        player.sendMessage(colorize("&l&6Вы убрали мусорный бак!"));
+        plugin.saveConfig();
+    }
+
+    private boolean hasChestDataInConfig(FileConfiguration configuration, Block block) {
+        return Optional.ofNullable(configuration.getConfigurationSection("chest." + block.getLocation())).isPresent();
     }
 }

@@ -1,6 +1,5 @@
 package ru.prisonlife.pljobs;
 
-import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -113,15 +112,11 @@ public class Main extends PLPlugin {
 
     private void registerListeners() {
         PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new ChestClick(this), this);
-        pluginManager.registerEvents(new ChestRemove(this), this);
-        pluginManager.registerEvents(new GarbagePickup(this), this);
-        pluginManager.registerEvents(new GarbageRemove(this), this);
-        pluginManager.registerEvents(new GarbageThrowAway(this), this);
-        pluginManager.registerEvents(new InventoryClick(this), this);
-        pluginManager.registerEvents(new ItemsDrop(this), this);
-        pluginManager.registerEvents(new PlayerLeave(this), this);
-        pluginManager.registerEvents(new PlayerJoin(this), this);
+        pluginManager.registerEvents(new ChestCleanerListener(this), this);
+        pluginManager.registerEvents(new GarbageListener(this), this);
+        pluginManager.registerEvents(new JobGuiListener(this), this);
+        pluginManager.registerEvents(new ItemsDrop(), this);
+        pluginManager.registerEvents(new WorkerListener(), this);
     }
 
     private void copyConfigFile() {

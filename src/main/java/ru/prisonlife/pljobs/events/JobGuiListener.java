@@ -22,14 +22,12 @@ import java.util.Random;
 
 import static ru.prisonlife.pljobs.Main.*;
 
-public class InventoryClick implements Listener {
+public class JobGuiListener implements Listener {
 
-    private PLPlugin plugin;
-    public InventoryClick(PLPlugin main) {
-        this.plugin = main;
+    private final PLPlugin plugin;
+    public JobGuiListener(PLPlugin plugin) {
+        this.plugin = plugin;
     }
-
-    final Random random = new Random();
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
@@ -141,23 +139,20 @@ public class InventoryClick implements Listener {
 
     private void creatingGarbage() {
         if (getCleanersCount() == 1) {
-            task = Bukkit.getScheduler().runTaskTimer(plugin, new Runnable() {
-                @Override
-                public void run() {
+            task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 
-                    if (garbageCount < getCleanersCount() * plugin.getConfig().getInt("cleaner.garbageCountPerCleaner")) {
+                if (garbageCount < getCleanersCount() * plugin.getConfig().getInt("cleaner.garbageCountPerCleaner")) {
 
-                        List<Integer> list = new ArrayList<>();
+                    List<Integer> list = new ArrayList<>();
 
-                        for (Integer key : cleanerPoints.keySet()) {
-                            list.add(key);
-                        }
-
-                        int rand = random.nextInt(list.size());
-
-                        cleanerPoints.get(list.get(rand)).getWorld().dropItem(cleanerPoints.get(list.get(rand)), new ItemStack(Material.COCOA_BEANS, 1));
-                        garbageCount ++;
+                    for (Integer key : cleanerPoints.keySet()) {
+                        list.add(key);
                     }
+
+                    int rand = new Random().nextInt(list.size());
+
+                    cleanerPoints.get(list.get(rand)).getWorld().dropItem(cleanerPoints.get(list.get(rand)), new ItemStack(Material.COCOA_BEANS, 1));
+                    garbageCount ++;
                 }
             }, 0, plugin.getConfig().getInt("cleaner.garbageSpawnIntensity") * 20);
         }

@@ -17,9 +17,9 @@ import static ru.prisonlife.pljobs.Main.garbageCount;
 
 public class GarbagePickup implements Listener {
 
-    private PLPlugin plugin;
-    public GarbagePickup(PLPlugin main) {
-        this.plugin = main;
+    private final PLPlugin plugin;
+    public GarbagePickup(PLPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler

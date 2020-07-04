@@ -1,11 +1,9 @@
 package ru.prisonlife.pljobs;
 
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Location;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.scheduler.BukkitTask;
 import ru.prisonlife.Job;
@@ -84,10 +82,10 @@ public class Main extends PLPlugin {
 
     private void loadInfo() {
         if (getConfig().getConfigurationSection("save") != null) {
-            ConfigurationSection section = getConfig().getConfigurationSection("save.jobs");
+            ConfigurationSection section = getConfig().getConfigurationSection("jobs");
             if (section != null) {
                 for (String number : section.getKeys(false)) {
-                    String string = getConfig().getString("save.jobs." + number);
+                    String string = getConfig().getString("jobs." + number);
                     int account = Integer.parseInt(number);
                     if (string.equals("cleaner")) {
                         PrisonLife.getPrisoner(account).setJob(Job.CLEANER);
@@ -98,6 +96,24 @@ public class Main extends PLPlugin {
                     }
 
                 }
+            }
+            if (getCleanersCount() > 0) {
+                taskGarbages = Bukkit.getScheduler().runTaskTimer(this, () -> {
+
+                    if (garbageCount < getCleanersCount() * getConfig().getInt("cleaner.garbageCountPerCleaner")) {
+
+                        List<Integer> list = new ArrayList<>();
+
+                        for (Integer key : cleanerPoints.keySet()) {
+                            list.add(key);
+                        }
+
+                        int rand = new Random().nextInt(list.size());
+
+                        cleanerPoints.get(list.get(rand)).getWorld().dropItem(cleanerPoints.get(list.get(rand)), new ItemStack(Material.COCOA_BEANS, 1));
+                        garbageCount ++;
+                    }
+                }, 0, getConfig().getInt("cleaner.garbageSpawnIntensity") * 20);
             }
 
             section = getConfig().getConfigurationSection("save.salaries");

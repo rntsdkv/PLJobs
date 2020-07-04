@@ -139,7 +139,7 @@ public class JobGuiListener implements Listener {
 
     private void creatingGarbage() {
         if (getCleanersCount() == 1) {
-            task = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+            taskGarbages = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
 
                 if (garbageCount < getCleanersCount() * plugin.getConfig().getInt("cleaner.garbageCountPerCleaner")) {
 

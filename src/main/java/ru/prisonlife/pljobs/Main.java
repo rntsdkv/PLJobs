@@ -11,7 +11,7 @@ import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
-import ru.prisonlife.util.Pair;
+import ru.prisonlife.plugin.PromisedPluginFile;
 import ru.prisonlife.pljobs.commands.*;
 import ru.prisonlife.pljobs.events.*;
 
@@ -26,16 +26,19 @@ public class Main extends PLPlugin {
     public static BukkitTask task;
     public static BukkitTask taskMine;
 
+    @Override
     public String getPluginName() {
         return "PLJobs";
     }
 
-    public List<Pair<String, Object>> initPluginFiles() {
-        return null;
+    @Override
+    public List<PromisedPluginFile> initPluginFiles() {
+        return new ArrayList<>();
     }
 
     @Override
     public void onEnable() {
+        super.onEnable();
         copyConfigFile();
         registerCommands();
         registerListeners();

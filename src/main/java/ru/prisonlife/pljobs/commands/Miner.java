@@ -49,6 +49,10 @@ public class Miner implements CommandExecutor  {
                 minerDelete(commandSender, strings, config);
             } else if (strings[0].equals("set")) {
                 minerSet(commandSender, strings, config);
+            } else if (strings[0].equals("on")) {
+                minerOn(commandSender, strings, config);
+            } else if (strings[0].equals("off")) {
+                minerOff(commandSender, strings, config);
             }
         }
         return true;
@@ -227,7 +231,9 @@ public class Miner implements CommandExecutor  {
         config.set("miners." + name, null);
         sender.sendMessage(colorize(config.getString("messages.minerDeleted")));
 
-        // TODO также сделать удаление из локальной переменной и таском в будущем
+        if (minerTime.containsKey(name)) {
+            minerTime.remove(name);
+        }
         return true;
     }
 
@@ -269,10 +275,34 @@ public class Miner implements CommandExecutor  {
         plugin.saveConfig();
         return true;
     }
+    
+    private boolean minerOff(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (strings.length != 2) {
+            sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
+            return false;
+        }
+        
+        String name = strings[1];
+        
+        if (config.getConfigurationSection("miners." + name) == null) {
+            sender.sendMessage(colorize(config.getString("messages.minerNotExists")));
+            return true;
+        }
 
+        if (!minerTime.containsKey(name)) {
+            minerTime.put(name, config.getInt("miners." + name + ".time") - 1);
+            sender.sendMessage("Шахта успешно выключена!");
+        } else {
+            sender.sendMessage("Шахта итак не работает!");
+        }
+        return true;
+    }
+    
+    /*
     private WorldEditPlugin getWorldEdit() {
         Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
         if (plugin instanceof WorldEditPlugin) return (WorldEditPlugin) plugin;
         return null;
     }
+    */
 }

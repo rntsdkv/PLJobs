@@ -3,6 +3,7 @@ package ru.prisonlife.pljobs;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
+import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
@@ -21,9 +22,17 @@ import java.util.*;
 public class Main extends PLPlugin {
 
     public static Map<Player, Integer> playersSalary = new HashMap<>();
+
+    public static List<Location> garbageChests = new ArrayList<>();
     public static Map<Integer, Location> cleanerPoints = new HashMap<>();
     public static Integer garbageCount = 0;
-    public static BukkitTask task;
+    public static BukkitTask taskGarbages;
+
+    public static List<String> minerNames = new ArrayList<>();
+    public static Map<String, World> minerWorld = new HashMap<>();
+    public static Map<String, Integer> minerReloadTime = new HashMap<>();
+    public static Map<String, Integer> minerTime = new HashMap<>();
+    public static Map<String, Integer> minerPoint = new HashMap<>();
     public static BukkitTask taskMine;
 
     @Override

@@ -1,26 +1,25 @@
 package ru.prisonlife.pljobs.events;
 
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
+import ru.prisonlife.currency.CurrencyManager;
 import ru.prisonlife.plugin.PLPlugin;
 
 import static ru.prisonlife.pljobs.Main.colorize;
 
 public class GarbageRemove implements Listener {
 
-    private PLPlugin plugin;
-    public GarbageRemove(PLPlugin main) {
-        this.plugin = main;
+    private final PLPlugin plugin;
+    public GarbageRemove(PLPlugin plugin) {
+        this.plugin = plugin;
     }
 
     @EventHandler
@@ -28,22 +27,21 @@ public class GarbageRemove implements Listener {
         Player player = event.getPlayer();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         Block block = event.getBlock();
-        if (block.getType() == Material.PLAYER_HEAD) {
-            if (prisoner.getJob() != Job.CLEANER) {
-                Integer amount = plugin.getConfig().getInt("cleaner.garbageBreak");
-                if (PrisonLife.getCurrencyManager().canPuttedMoney(player.getInventory(), amount)) {
-                    for (ItemStack item : PrisonLife.getCurrencyManager().createMoney(amount)) {
-                        player.getInventory().addItem(item);
-                    }
-                } else {
-                    event.setCancelled(true);
-                    player.sendMessage(colorize("&l&6У вас нет места для денег!"));
-                }
-            } else {
-                event.setCancelled(true);
-                player.sendMessage(colorize("&l&cТебе не хватает мусора?!"));
-            }
+        CurrencyManager currencyManager = PrisonLife.getCurrencyManager();
+        Integer amount = plugin.getConfig().getInt("cleaner.garbageBreak");
 
+        if (block.getType() != Material.PLAYER_HEAD) return;
+        else if (prisoner.getJob() != Job.CLEANER) {
+            event.setCancelled(true);
+            player.sendMessage(colorize("&l&cТебе не хватает мусора?!"));
+            return;
         }
+        else if (!currencyManager.canPuttedMoney(player.getInventory(), amount)) {
+            event.setCancelled(true);
+            player.sendMessage(colorize("&l&6У вас нет места для денег!"));
+            return;
+        }
+
+        currencyManager.createMoney(amount).forEach(player.getInventory()::addItem);
     }
 }

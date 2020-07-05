@@ -22,8 +22,6 @@ messages:
   mineReloadSoon: "&l&6Шахта %name% скоро обновится!"
   mineReload: "&l&6Шахта %name% обновилась!"
 cleanerPointCount: 0
-cleaners:
-chests:
 jobLevels:
   miner: 2
   cleaner: 1
@@ -34,3 +32,7 @@ cleaner:
   garbageAway: 2
   garbageCountPerCleaner: 10
   garbageSpawnIntensity: 10
+miner:
+  blocks:
+    IRON_ORE: 1
+    DIAMOND_ORE: 4

@@ -30,6 +30,7 @@ public class Main extends PLPlugin {
     public static BukkitTask taskGarbages;
 
     public static Map<String, Integer> minerTime = new HashMap<>();
+    public static Map<String, Integer> minerBlockValues = new HashMap<>();
     public static BukkitTask taskMine;
 
     @Override
@@ -60,60 +61,7 @@ public class Main extends PLPlugin {
                     minerTime.replace(name, 0);
                     sendAlarmMiners("reload", name);
 
-                    World world = Bukkit.getWorld(getConfig().getString("miners." + name + ".world"));
-                    int x1 = getConfig().getInt("miners." + name + ".1.x");
-                    int y1 = getConfig().getInt("miners." + name + ".1.y");
-                    int z1 = getConfig().getInt("miners." + name + ".1.z");
-                    Location pos1 = new Location(world, x1, y1, z1);
-
-                    int x2 = getConfig().getInt("miners." + name + ".2.x");
-                    int y2 = getConfig().getInt("miners." + name + ".2.y");
-                    int z2 = getConfig().getInt("miners." + name + ".2.z");
-                    Location pos2 = new Location(world, x2, y2, z2);
-
-                    Selection selection = new CuboidSelection(world, pos1, pos2);
-
-                    List<String> blocksID = new ArrayList<>();
-                    Map<String, Integer> blocks = new HashMap<>();
-                    int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
-
-                    for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
-                        double x = getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount;
-                        blocks.put(id, (int) Math.round(x));
-                        blocksID.add(id);
-                    }
-
-                    int minX = selection.getMinimumPoint().getBlockX();
-                    int minY = selection.getMinimumPoint().getBlockY();
-                    int minZ = selection.getMinimumPoint().getBlockZ();
-
-                    int maxX = selection.getMaximumPoint().getBlockX();
-                    int maxY = selection.getMaximumPoint().getBlockY();
-                    int maxZ = selection.getMaximumPoint().getBlockZ();
-
-                    // TODO тп игроков на точку
-
-                    Random rand = new Random();
-                    for (int x = minX; x <= maxX; x++) {
-                        for (int y = minY; y <= maxY; y++) {
-                            for (int z = minZ; z <= maxZ; z++) {
-                                String block = null;
-                                while (true) {
-                                    boolean c = false;
-                                    int id = rand.nextInt(blocksID.size());
-                                    if (blocks.get(blocksID.get(id)) != 0) {
-                                        block = blocksID.get(id);
-                                        c = true;
-                                    }
-                                    if (c) {
-                                        break;
-                                    }
-                                }
-                                world.getBlockAt(x, y, z).setType(Material.valueOf(block));
-                                blocks.replace(block, blocks.get(block) - 1);
-                            }
-                        }
-                    }
+                    mineReset(name);
                 }
             }
         }, 0, 20);
@@ -248,6 +196,63 @@ public class Main extends PLPlugin {
         }
     }
 
+    private void mineReset(String name) {
+        World world = Bukkit.getWorld(getConfig().getString("miners." + name + ".world"));
+        int x1 = getConfig().getInt("miners." + name + ".1.x");
+        int y1 = getConfig().getInt("miners." + name + ".1.y");
+        int z1 = getConfig().getInt("miners." + name + ".1.z");
+        Location pos1 = new Location(world, x1, y1, z1);
+
+        int x2 = getConfig().getInt("miners." + name + ".2.x");
+        int y2 = getConfig().getInt("miners." + name + ".2.y");
+        int z2 = getConfig().getInt("miners." + name + ".2.z");
+        Location pos2 = new Location(world, x2, y2, z2);
+
+        Selection selection = new CuboidSelection(world, pos1, pos2);
+
+        List<String> blocksID = new ArrayList<>();
+        Map<String, Integer> blocks = new HashMap<>();
+        int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
+
+        for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
+            double x = getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount;
+            blocks.put(id, (int) Math.round(x));
+            blocksID.add(id);
+        }
+
+        int minX = selection.getMinimumPoint().getBlockX();
+        int minY = selection.getMinimumPoint().getBlockY();
+        int minZ = selection.getMinimumPoint().getBlockZ();
+
+        int maxX = selection.getMaximumPoint().getBlockX();
+        int maxY = selection.getMaximumPoint().getBlockY();
+        int maxZ = selection.getMaximumPoint().getBlockZ();
+
+        // TODO тп игроков на точку
+
+        Random rand = new Random();
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    String block = null;
+                    while (true) {
+                        boolean c = false;
+                        int id = rand.nextInt(blocksID.size());
+                        if (blocks.get(blocksID.get(id)) != 0) {
+                            block = blocksID.get(id);
+                            c = true;
+                        }
+                        if (c) {
+                            break;
+                        }
+                    }
+                    world.getBlockAt(x, y, z).setType(Material.valueOf(block));
+                    blocks.replace(block, blocks.get(block) - 1);
+                }
+            }
+        }
+    }
+
     private void loadInfo() {
         ConfigurationSection section = getConfig().getConfigurationSection("jobs");
         if (section != null) {
@@ -322,6 +327,13 @@ public class Main extends PLPlugin {
             }
         }
         getConfig().set("garbageChests", null);
+
+        section = getConfig().getConfigurationSection("miner.blocks");
+        if (section != null) {
+            for (String id : section.getKeys(false)) {
+                minerBlockValues.put(id, getConfig().getInt("miner.blocks." + id));
+            }
+        }
 
         saveConfig();
     }

@@ -8,7 +8,6 @@ import org.bukkit.event.player.PlayerDropItemEvent;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
-import ru.prisonlife.plugin.PLPlugin;
 
 import static ru.prisonlife.pljobs.Main.minerBlockValues;
 

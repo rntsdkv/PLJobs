@@ -69,9 +69,7 @@ public class JobGuiListener implements Listener {
                 player.sendMessage(colorize(plugin.getConfig().getString("messages.leaveJob")));
 
                 if (PrisonLife.getCurrencyManager().canPuttedMoney(player.getInventory(), overdueAmount + salary)) {
-                    for (ItemStack itemMoney : PrisonLife.getCurrencyManager().createMoney(overdueAmount + salary)) {
-                        player.getInventory().addItem(itemMoney);
-                    }
+                    InventoryUtil.putItemStacks(player.getInventory(), PrisonLife.getCurrencyManager().createMoney(overdueAmount + salary));
                     prisoner.setOverdueJobSalary(0);
                 } else {
                     player.sendMessage(colorize(plugin.getConfig().getString("messages.notEnoughSlots")));

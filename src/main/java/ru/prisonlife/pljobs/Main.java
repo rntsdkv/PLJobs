@@ -33,6 +33,10 @@ public class Main extends PLPlugin {
     public static Map<String, Integer> minerBlockValues = new HashMap<>();
     public static BukkitTask taskMine;
 
+    public static List<Location> orePoints = new ArrayList<>();
+    public static List<Location> oreStorages = new ArrayList<>();
+    public static List<Location> ironStorages = new ArrayList<>();
+
     @Override
     public String getPluginName() {
         return "PLJobs";

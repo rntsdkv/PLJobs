@@ -197,6 +197,24 @@ public class Main extends PLPlugin {
         }
     }
 
+    private boolean isInside(Player player, Location minimum, Location maximum) {
+        Location location = player.getLocation();
+        World world = location.getWorld();
+
+        int minX = minimum.getBlockX();
+        int minY = minimum.getBlockY();
+        int minZ = minimum.getBlockZ();
+
+        int maxX = maximum.getBlockX();
+        int maxY = maximum.getBlockY();
+        int maxZ = maximum.getBlockZ();
+
+        return location.getWorld().equals(world)
+                && (location.getX() >= minX && location.getX() <= maxX)
+                && (location.getY() >= minY && location.getY() <= maxY)
+                && (location.getZ() >= minZ && location.getZ() <= maxZ);
+    }
+
     private void mineReset(String name) {
         World world = Bukkit.getWorld(getConfig().getString("miners." + name + ".world"));
         int x1 = getConfig().getInt("miners." + name + ".1.x");
@@ -229,7 +247,15 @@ public class Main extends PLPlugin {
         int maxY = selection.getMaximumPoint().getBlockY();
         int maxZ = selection.getMaximumPoint().getBlockZ();
 
-        // TODO тп игроков на точку
+        for (Player player : getServer().getOnlinePlayers()) {
+            if (isInside(player, selection.getMinimumPoint(), selection.getMaximumPoint())) {
+                int x = getConfig().getInt("miners." + name + ".point.x");
+                int y = getConfig().getInt("miners." + name + ".point.y");
+                int z = getConfig().getInt("miners." + name + ".point.z");
+
+                player.teleport(new Location(world, x, y, z));
+            }
+        }
 
         Random rand = new Random();
         for (int x = minX; x <= maxX; x++) {

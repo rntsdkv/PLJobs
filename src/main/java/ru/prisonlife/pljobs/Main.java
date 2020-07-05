@@ -99,12 +99,10 @@ public class Main extends PLPlugin {
                                 String block = null;
                                 while (true) {
                                     boolean c = false;
-                                    for (String id : blocksID) {
-                                        if (blocks.get(id) != 0) {
-                                            c = true;
-                                            block = id;
-                                            break;
-                                        }
+                                    int id = rand.nextInt(blocksID.size());
+                                    if (blocks.get(blocksID.get(id)) != 0) {
+                                        block = blocksID.get(id);
+                                        c = true;
                                     }
                                     if (c) {
                                         break;

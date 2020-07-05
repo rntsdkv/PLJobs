@@ -95,7 +95,7 @@ public class GarbageListener implements Listener {
 
                 if (plugin.getConfig().getConfigurationSection("chests." + block.getX() + "&" + block.getY() + "&" + block.getZ()) != null) {
                     int amount = itemInHand.getAmount();
-                    int price = plugin.getConfig().getInt("cleaner.garbageAway");sss
+                    int price = plugin.getConfig().getInt("cleaner.garbageAway");
                     playersSalary.replace(player, playersSalary.get(player) + price * amount);
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price * amount)));
                     player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));

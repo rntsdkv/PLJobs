@@ -276,7 +276,7 @@ public class Miner implements CommandExecutor  {
         return true;
     }
     
-    private boolean minerOff(CommandSender sender, String[] strings, FileConfiguration config) {
+    private boolean minerOn(CommandSender sender, String[] strings, FileConfiguration config) {
         if (strings.length != 2) {
             sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
             return false;
@@ -298,7 +298,7 @@ public class Miner implements CommandExecutor  {
         return true;
     }
 
-    private boolean minerOn(CommandSender sender, String[] strings, FileConfiguration config) {
+    private boolean minerOff(CommandSender sender, String[] strings, FileConfiguration config) {
         if (strings.length != 2) {
             sender.sendMessage(colorize(config.getString("messages.wrongCommandArguments")));
             return false;

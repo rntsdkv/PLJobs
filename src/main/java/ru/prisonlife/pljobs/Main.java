@@ -141,6 +141,7 @@ public class Main extends PLPlugin {
         pluginManager.registerEvents(new JobGuiListener(this), this);
         pluginManager.registerEvents(new ItemsDrop(), this);
         pluginManager.registerEvents(new WorkerListener(), this);
+        pluginManager.registerEvents(new MinerListener(this), this);
     }
 
     private void copyConfigFile() {

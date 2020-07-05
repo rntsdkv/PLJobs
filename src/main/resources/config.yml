@@ -21,6 +21,9 @@ messages:
   prSumMustBe100: "&l&cНеправильные данные: общая сумма должна быть 100%"
   mineReloadSoon: "&l&6Шахта %name% скоро обновится!"
   mineReload: "&l&6Шахта %name% обновилась!"
+titles:
+  orePointQuestion: "Сдать всю руду?"
+  orePointPart: "Положите руду, которую хотите сдать"
 cleanerPointCount: 0
 jobLevels:
   miner: 2

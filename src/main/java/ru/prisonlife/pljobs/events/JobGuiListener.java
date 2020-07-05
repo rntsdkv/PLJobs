@@ -1,5 +1,7 @@
 package ru.prisonlife.pljobs.events;
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -7,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
@@ -133,6 +136,41 @@ public class JobGuiListener implements Listener {
             }
         }
 
+        if (viewTitle.equals(plugin.getConfig().getString("titles.orePointQuestion"))) {
+            event.setCancelled(true);
+            ItemStack item = event.getCurrentItem();
+            Inventory inventory = player.getInventory();
+            if (item.getType() == Material.GREEN_STAINED_GLASS) {
+                for (int x = 0; x <= inventory.getSize(); x++) {
+                    ItemStack itemInventory = inventory.getItem(x);
+                    if (itemInventory == null) continue;
+                    if (minerBlockValues.containsKey(itemInventory.getType().name())) {
+                        inventory.setItem(x, null);
+                    }
+                }
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
+            } else if (item.getType() == Material.RED_STAINED_GLASS) {
+                Inventory GUI = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointPart"));
+                player.openInventory(GUI);
+            }
+        }
+
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Player player = (Player) event.getPlayer();
+
+        Inventory inventory = event.getInventory();
+
+        for (int x = 0; x <= inventory.getSize(); x++) {
+            ItemStack itemInventory = inventory.getItem(x);
+            if (itemInventory == null) continue;
+            if (!minerBlockValues.containsKey(itemInventory.getType().name())) {
+                player.getInventory().addItem(itemInventory);
+            }
+        }
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
     }
 
     private void creatingGarbage() {

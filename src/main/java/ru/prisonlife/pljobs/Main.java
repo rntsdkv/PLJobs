@@ -79,7 +79,7 @@ public class Main extends PLPlugin {
 
                     for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
                         double x = getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount;
-                        blocks.put(id, Math.round(x));
+                        blocks.put(id, (int) Math.round(x));
                         blocksID.add(id);
                     }
 

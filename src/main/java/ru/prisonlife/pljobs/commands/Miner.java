@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -289,11 +290,18 @@ public class Miner implements CommandExecutor  {
             return true;
         }
 
-        if (!minerTime.containsKey(name)) {
-            minerTime.put(name, config.getInt("miners." + name + ".time") - 1);
-            sender.sendMessage("Шахта успешно включена!");
+        String time = config.getString("miners." + name + ".time");
+        ConfigurationSection blocks = config.getConfigurationSection("miners." + name + ".blocks");
+
+        if (time != null && blocks != null) {
+            if (!minerTime.containsKey(name)) {
+                minerTime.put(name, config.getInt("miners." + name + ".time") - 1);
+                sender.sendMessage("Шахта успешно включена!");
+            } else {
+                sender.sendMessage("Шахта итак работает!");
+            }
         } else {
-            sender.sendMessage("Шахта итак работает!");
+            sender.sendMessage("Невозможно включить шахту! Добавьте время и блоки.");
         }
         return true;
     }

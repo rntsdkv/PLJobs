@@ -10,6 +10,8 @@ import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
 
+import static ru.prisonlife.pljobs.Main.minerBlockValues;
+
 public class ItemsDrop implements Listener {
 
     @EventHandler
@@ -18,6 +20,11 @@ public class ItemsDrop implements Listener {
         Prisoner prisoner = PrisonLife.getPrisoner(event.getPlayer());
         if ((item.getItemStack().getType() == Material.IRON_SHOVEL || item.getItemStack().getType() == Material.COCOA_BEANS) && prisoner.getJob() == Job.CLEANER) {
             event.setCancelled(true);
+        }
+        if (prisoner.getJob() == Job.MINER) {
+            if (minerBlockValues.containsKey(item.getItemStack().getType().name())) {
+                event.setCancelled(true);
+            }
         }
     }
 }

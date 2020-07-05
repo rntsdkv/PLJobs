@@ -8,6 +8,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
@@ -36,12 +37,18 @@ public class MinerListener implements Listener {
         Block block = event.getBlock();
         String blockType = block.getType().name();
 
+        event.setDropItems(false);
+
         if (!minerBlockValues.containsKey(blockType)) return;
         if (prisoner.getJob() != Job.MINER) return;
 
         int price = minerBlockValues.get(blockType);
 
         playersSalary.put(player, playersSalary.get(player) + price);
+        player.getInventory().addItem(new ItemStack(block.getType(), 1));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price)));
     }
+
+    @EventHandler
+    public void
 }

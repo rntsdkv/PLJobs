@@ -78,7 +78,8 @@ public class Main extends PLPlugin {
                     int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
 
                     for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
-                        blocks.put(id, getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount);
+                        double x = getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount;
+                        blocks.put(id, Math.round(x));
                         blocksID.add(id);
                     }
 

@@ -1,5 +1,8 @@
 package ru.prisonlife.pljobs;
 
+import com.sk89q.worldedit.WorldEdit;
+import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
+import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
@@ -48,9 +51,40 @@ public class Main extends PLPlugin {
         loadInfo();
         getGarbagePoints();
         taskMine = Bukkit.getScheduler().runTaskTimer(this, () -> {
-            for (String name : getConfig().getConfigurationSection("miners").getKeys(false)) {
-                if (minerTime.containsKey(name)) {
-                    minerTime.put(name, minerTime.get(name) + 1);
+            for (String name : minerTime.keySet()) {
+                minerTime.put(name, minerTime.get(name) + 1);
+
+                if (minerTime.get(name) == getConfig().getInt("miners." + name + ".time") - 5) {
+                    sendAlarmMiners("soon", name);
+                } else if (minerTime.get(name) == getConfig().getInt("miners." + name + ".time")) {
+                    minerTime.replace(name, 0);
+                    sendAlarmMiners("reload", name);
+
+                    World world = Bukkit.getWorld(getConfig().getString("miners." + name + ".world"));
+                    int x1 = getConfig().getInt("miners." + name + ".1.x");
+                    int y1 = getConfig().getInt("miners." + name + ".1.y");
+                    int z1 = getConfig().getInt("miners." + name + ".1.z");
+                    Location pos1 = new Location(world, x1, y1, z1);
+
+                    int x2 = getConfig().getInt("miners." + name + ".2.x");
+                    int y2 = getConfig().getInt("miners." + name + ".2.y");
+                    int z2 = getConfig().getInt("miners." + name + ".2.z");
+                    Location pos2 = new Location(world, x2, y2, z2);
+
+                    Selection selection = new CuboidSelection(world, pos1, pos2);
+
+                    int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
+
+                    int minX = selection.getMinimumPoint().getBlockX();
+                    int minY = selection.getMinimumPoint().getBlockY();
+                    int minZ = selection.getMinimumPoint().getBlockZ();
+
+                    int maxX = selection.getMaximumPoint().getBlockX();
+                    int maxY = selection.getMaximumPoint().getBlockY();
+                    int maxZ = selection.getMaximumPoint().getBlockZ();
+
+                    // TODO тп игроков на точку
+
                 }
             }
         }, 0, 20);
@@ -111,6 +145,78 @@ public class Main extends PLPlugin {
         }
 
         saveConfig();
+    }
+
+    private void registerCommands() {
+        getCommand("cleanersetpoint").setExecutor(new CleanerSetPoint(this));
+        getCommand("cleanerdelpoint").setExecutor(new CleanerDeletePoint(this));
+        getCommand("cleanerlist").setExecutor(new CleanerList(this));
+        getCommand("getsalary").setExecutor(new GetSalary(this));
+        getCommand("gowork").setExecutor(new GoWork(this));
+        getCommand("setgarbage").setExecutor(new SetGarbage(this));
+        getCommand("miner").setExecutor(new Miner(this));
+    }
+
+    private void registerListeners() {
+        PluginManager pluginManager = getServer().getPluginManager();
+        pluginManager.registerEvents(new ChestCleanerListener(this), this);
+        pluginManager.registerEvents(new GarbageListener(this), this);
+        pluginManager.registerEvents(new JobGuiListener(this), this);
+        pluginManager.registerEvents(new ItemsDrop(), this);
+        pluginManager.registerEvents(new WorkerListener(), this);
+    }
+
+    private void copyConfigFile() {
+        File config = new File(getDataFolder() + File.separator + "config.yml");
+        if (!config.exists()) {
+            getLogger().info("Default config copying...");
+            getConfig().options().copyDefaults(true);
+            saveDefaultConfig();
+            getLogger().info("Config copied...");
+        }
+    }
+
+    public static String colorize(String text) {
+        return ChatColor.translateAlternateColorCodes('&', text);
+    }
+
+    private void getGarbagePoints() {
+        for (String id : getConfig().getConfigurationSection("cleaners").getKeys(false)) {
+
+            String world = getConfig().getString("cleaners." + id + ".world");
+            int x = getConfig().getInt("cleaners." + id + ".x");
+            int y = getConfig().getInt("cleaners." + id + ".y");
+            int z = getConfig().getInt("cleaners." + id + ".z");
+
+            cleanerPoints.put(Integer.parseInt(id), new Location(Bukkit.getWorld(world), x, y, z));
+        }
+    }
+
+    public static Integer getWorkerCount(String job) {
+        int count = 0;
+
+        if (job.equals("cleaner")) {
+            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
+                if (PrisonLife.getPrisoner(player).getJob() == Job.CLEANER) {
+                    count++;
+                }
+            }
+        }
+
+        return count;
+    }
+
+    private void sendAlarmMiners(String type, String mineName) {
+        for (Player player : getServer().getOnlinePlayers()) {
+            Prisoner prisoner = PrisonLife.getPrisoner(player);
+            if (prisoner.getJob() == Job.MINER) {
+                if (type.equals("soon")) {
+                    player.sendMessage(colorize(getConfig().getString("messages.mineReloadSoon")).replace("%name%", mineName));
+                } else if (type.equals("reload")) {
+                    player.sendMessage(colorize(getConfig().getString("messages.mineReload")).replace("%name%", mineName));
+                }
+            }
+        }
     }
 
     private void loadInfo() {
@@ -189,65 +295,6 @@ public class Main extends PLPlugin {
         getConfig().set("garbageChests", null);
 
         saveConfig();
-    }
-
-    private void registerCommands() {
-        getCommand("cleanersetpoint").setExecutor(new CleanerSetPoint(this));
-        getCommand("cleanerdelpoint").setExecutor(new CleanerDeletePoint(this));
-        getCommand("cleanerlist").setExecutor(new CleanerList(this));
-        getCommand("getsalary").setExecutor(new GetSalary(this));
-        getCommand("gowork").setExecutor(new GoWork(this));
-        getCommand("setgarbage").setExecutor(new SetGarbage(this));
-        getCommand("miner").setExecutor(new Miner(this));
-    }
-
-    private void registerListeners() {
-        PluginManager pluginManager = getServer().getPluginManager();
-        pluginManager.registerEvents(new ChestCleanerListener(this), this);
-        pluginManager.registerEvents(new GarbageListener(this), this);
-        pluginManager.registerEvents(new JobGuiListener(this), this);
-        pluginManager.registerEvents(new ItemsDrop(), this);
-        pluginManager.registerEvents(new WorkerListener(), this);
-    }
-
-    private void copyConfigFile() {
-        File config = new File(getDataFolder() + File.separator + "config.yml");
-        if (!config.exists()) {
-            getLogger().info("Default config copying...");
-            getConfig().options().copyDefaults(true);
-            saveDefaultConfig();
-            getLogger().info("Config copied...");
-        }
-    }
-
-    public static String colorize(String text) {
-        return ChatColor.translateAlternateColorCodes('&', text);
-    }
-
-    private void getGarbagePoints() {
-        for (String id : getConfig().getConfigurationSection("cleaners").getKeys(false)) {
-
-            String world = getConfig().getString("cleaners." + id + ".world");
-            int x = getConfig().getInt("cleaners." + id + ".x");
-            int y = getConfig().getInt("cleaners." + id + ".y");
-            int z = getConfig().getInt("cleaners." + id + ".z");
-
-            cleanerPoints.put(Integer.parseInt(id), new Location(Bukkit.getWorld(world), x, y, z));
-        }
-    }
-
-    public static Integer getWorkerCount(String job) {
-        int count = 0;
-
-        if (job.equals("cleaner")) {
-            for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-                if (PrisonLife.getPrisoner(player).getJob() == Job.CLEANER) {
-                    count++;
-                }
-            }
-        }
-
-        return count;
     }
 
 

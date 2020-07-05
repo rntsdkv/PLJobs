@@ -19,6 +19,8 @@ messages:
   blocksSet: "&l&6Блоки шахты установлены!"
   minerDeleted: "&l&6Шахта была удалена!"
   prSumMustBe100: "&l&cНеправильные данные: общая сумма должна быть 100%"
+  mineReloadSoon: "&l&6Шахта %name% скоро обновится!"
+  mineReload: "&l&6Шахта %name% обновилась!"
 cleanerPointCount: 0
 cleaners:
 chests:

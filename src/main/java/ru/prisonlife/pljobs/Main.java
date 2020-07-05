@@ -73,11 +73,13 @@ public class Main extends PLPlugin {
 
                     Selection selection = new CuboidSelection(world, pos1, pos2);
 
+                    List<String> blocksID = new ArrayList<>();
                     Map<String, Integer> blocks = new HashMap<>();
                     int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
 
                     for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
                         blocks.put(id, getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount);
+                        blocksID.add(id);
                     }
 
                     int minX = selection.getMinimumPoint().getBlockX();
@@ -90,7 +92,29 @@ public class Main extends PLPlugin {
 
                     // TODO тп игроков на точку
 
-
+                    Random rand = new Random();
+                    for (int x = minX; x <= maxX; x++) {
+                        for (int y = minY; y <= maxY; y++) {
+                            for (int z = minZ; z <= maxZ; z++) {
+                                String block = null;
+                                while (true) {
+                                    boolean c = false;
+                                    for (String id : blocksID) {
+                                        if (blocks.get(id) != 0) {
+                                            c = true;
+                                            block = id;
+                                            break;
+                                        }
+                                    }
+                                    if (c) {
+                                        break;
+                                    }
+                                }
+                                world.getBlockAt(x, y, z).setType(Material.valueOf(block));
+                                blocks.replace(block, blocks.get(block) - 1);
+                            }
+                        }
+                    }
                 }
             }
         }, 0, 20);

@@ -4,6 +4,7 @@ import com.sk89q.worldedit.bukkit.WorldEditPlugin;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -54,6 +55,12 @@ public class Miner implements CommandExecutor  {
                 minerOn(commandSender, strings, config);
             } else if (strings[0].equals("off")) {
                 minerOff(commandSender, strings, config);
+            } else if (strings[0].equals("orepoint")) {
+                minerOrePoint(commandSender, strings, config);
+            } else if (strings[0].equals("orestorage")) {
+                minerOreStorage(commandSender, strings, config);
+            } else if (strings[0].equals("ironstorage")) {
+                minerIronStorage(commandSender, strings, config);
             }
         }
         return true;
@@ -235,6 +242,8 @@ public class Miner implements CommandExecutor  {
         if (minerTime.containsKey(name)) {
             minerTime.remove(name);
         }
+
+        plugin.saveConfig();
         return true;
     }
 
@@ -328,11 +337,95 @@ public class Miner implements CommandExecutor  {
         return true;
     }
     
-    /*
-    private WorldEditPlugin getWorldEdit() {
-        Plugin plugin = Bukkit.getServer().getPluginManager().getPlugin("WorldEdit");
-        if (plugin instanceof WorldEditPlugin) return (WorldEditPlugin) plugin;
-        return null;
+    private boolean minerOrePoint(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(config.getString("messages.wrongSender"));
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Location location = player.getLocation();
+
+        orePoints.add(location);
+
+        Random rand = new Random();
+
+        World world = location.getWorld();
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        int name = rand.nextInt(99999);
+
+        config.set("orePoints." + name + ".world", world.getName());
+        config.set("orePoints." + name + ".x", x);
+        config.set("orePoints." + name + ".y", y);
+        config.set("orePoints." + name + ".z", z);
+
+        player.sendMessage("Точка OrePoint установлена!");
+        plugin.saveConfig();
+        return true;
     }
-    */
+
+    private boolean minerOreStorage(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(config.getString("messages.wrongSender"));
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Location location = player.getLocation();
+
+        oreStorages.add(location);
+
+        Random rand = new Random();
+
+        World world = location.getWorld();
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        int name = rand.nextInt(99999);
+
+        config.set("oreStorages." + name + ".world", world.getName());
+        config.set("oreStorages." + name + ".x", x);
+        config.set("oreStorages." + name + ".y", y);
+        config.set("oreStorages." + name + ".z", z);
+
+        player.sendMessage("Точка OreStorage установлена!");
+        plugin.saveConfig();
+
+        return true;
+    }
+
+    private boolean minerIronStorage(CommandSender sender, String[] strings, FileConfiguration config) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(config.getString("messages.wrongSender"));
+            return true;
+        }
+
+        Player player = (Player) sender;
+        Location location = player.getLocation();
+
+        ironStorages.add(location);
+
+        Random rand = new Random();
+
+        World world = location.getWorld();
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        int name = rand.nextInt(99999);
+
+        config.set("ironStorages." + name + ".world", world.getName());
+        config.set("ironStorages." + name + ".x", x);
+        config.set("ironStorages." + name + ".y", y);
+        config.set("ironStorages." + name + ".z", z);
+
+        player.sendMessage("Точка IronStorage установлена!");
+        plugin.saveConfig();
+
+        return true;
+    }
 }

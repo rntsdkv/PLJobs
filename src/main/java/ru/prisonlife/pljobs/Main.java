@@ -73,7 +73,12 @@ public class Main extends PLPlugin {
 
                     Selection selection = new CuboidSelection(world, pos1, pos2);
 
+                    Map<String, Integer> blocks = new HashMap<>();
                     int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
+
+                    for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
+                        blocks.put(id, getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount);
+                    }
 
                     int minX = selection.getMinimumPoint().getBlockX();
                     int minY = selection.getMinimumPoint().getBlockY();
@@ -84,6 +89,7 @@ public class Main extends PLPlugin {
                     int maxZ = selection.getMaximumPoint().getBlockZ();
 
                     // TODO тп игроков на точку
+
 
                 }
             }

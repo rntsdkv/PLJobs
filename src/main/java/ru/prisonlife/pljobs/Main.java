@@ -366,6 +366,42 @@ public class Main extends PLPlugin {
             }
         }
 
+        section = getConfig().getConfigurationSection("orePoints");
+        if (section != null) {
+            for (String name : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("orePoints." + name + ".world"));
+                int x = getConfig().getInt("orePoints." + name + ".x");
+                int y = getConfig().getInt("orePoints." + name + ".y");
+                int z = getConfig().getInt("orePoints." + name + ".z");
+
+                orePoints.add(new Location(world, x, y, z));
+            }
+        }
+
+        section = getConfig().getConfigurationSection("oreStorages");
+        if (section != null) {
+            for (String name : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("oreStorages." + name + ".world"));
+                int x = getConfig().getInt("oreStorages." + name + ".x");
+                int y = getConfig().getInt("oreStorages." + name + ".y");
+                int z = getConfig().getInt("oreStorages." + name + ".z");
+
+                oreStorages.add(new Location(world, x, y, z));
+            }
+        }
+
+        section = getConfig().getConfigurationSection("ironStorages");
+        if (section != null) {
+            for (String name : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("ironStorages." + name + ".world"));
+                int x = getConfig().getInt("ironStorages." + name + ".x");
+                int y = getConfig().getInt("ironStorages." + name + ".y");
+                int z = getConfig().getInt("ironStorages." + name + ".z");
+
+                ironStorages.add(new Location(world, x, y, z));
+            }
+        }
+
         saveConfig();
     }
 

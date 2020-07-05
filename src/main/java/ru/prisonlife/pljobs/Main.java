@@ -57,7 +57,7 @@ public class Main extends PLPlugin {
 
                 if (minerTime.get(name) == getConfig().getInt("miners." + name + ".time") - 5) {
                     sendAlarmMiners("soon", name);
-                } else if (minerTime.get(name) == getConfig().getInt("miners." + name + ".time")) {
+                } else if (minerTime.get(name) >= getConfig().getInt("miners." + name + ".time")) {
                     minerTime.replace(name, 0);
                     sendAlarmMiners("reload", name);
 

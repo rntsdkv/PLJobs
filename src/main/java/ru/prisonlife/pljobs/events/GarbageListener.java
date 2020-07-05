@@ -1,6 +1,9 @@
 package ru.prisonlife.pljobs.events;
 
 
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -36,25 +39,20 @@ public class GarbageListener implements Listener {
         ItemStack item = event.getItem().getItemStack();
 
         if (item.getType() == Material.COCOA_BEANS) {
-            if (prisoner.getJob() == Job.CLEANER) {
-                if (playersSalary.containsKey(player)) {
-                    playersSalary.replace(player, playersSalary.get(player) + plugin.getConfig().getInt("cleaner.garbagePickup"));
-                } else {
-                    playersSalary.put(player, plugin.getConfig().getInt("cleaner.garbagePickup"));
-                }
-
-                garbageCount -= item.getAmount();
-            } else {
+            if (prisoner.getJob() != Job.CLEANER) {
                 event.setCancelled(true);
+                return;
             }
+
+            int price = plugin.getConfig().getInt("cleaner.garbagePickup");
+            playersSalary.replace(player, playersSalary.get(player) + price);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price)));
+
+            garbageCount -= item.getAmount();
         }
 
         if (item.getType() == Material.PLAYER_HEAD) {
-            if (prisoner.getJob() != Job.CLEANER) {
-                player.getInventory().remove(new ItemStack(Material.PLAYER_HEAD));
-            } else {
-                event.setCancelled(true);
-            }
+            player.getInventory().remove(new ItemStack(Material.PLAYER_HEAD));
         }
     }
 
@@ -67,7 +65,7 @@ public class GarbageListener implements Listener {
         Integer amount = plugin.getConfig().getInt("cleaner.garbageBreak");
 
         if (block.getType() != Material.PLAYER_HEAD) return;
-        else if (prisoner.getJob() != Job.CLEANER) {
+        else if (prisoner.getJob() == Job.CLEANER) {
             event.setCancelled(true);
             player.sendMessage(colorize("&l&cТебе не хватает мусора?!"));
             return;
@@ -78,6 +76,7 @@ public class GarbageListener implements Listener {
             return;
         }
 
+        player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", amount)));
         currencyManager.createMoney(amount).forEach(player.getInventory()::addItem);
     }
 
@@ -96,7 +95,9 @@ public class GarbageListener implements Listener {
 
                 if (plugin.getConfig().getConfigurationSection("chests." + block.getX() + "&" + block.getY() + "&" + block.getZ()) != null) {
                     int amount = itemInHand.getAmount();
-                    playersSalary.replace(player, playersSalary.get(player) + plugin.getConfig().getInt("cleaner.garbageAway") * amount);
+                    int price = plugin.getConfig().getInt("cleaner.garbageAway");sss
+                    playersSalary.replace(player, playersSalary.get(player) + price * amount);
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price * amount)));
                     player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
                     event.setCancelled(true);
                 }

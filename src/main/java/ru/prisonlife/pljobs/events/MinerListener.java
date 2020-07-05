@@ -37,7 +37,6 @@ public class MinerListener implements Listener {
         String blockType = block.getType().name();
 
         if (!minerBlockValues.containsKey(blockType)) return;
-
         if (prisoner.getJob() != Job.MINER) return;
 
         int price = minerBlockValues.get(blockType);

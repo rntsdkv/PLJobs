@@ -146,7 +146,10 @@ public class JobGuiListener implements Listener {
                     ItemStack itemInventory = inventory.getItem(x);
                     if (itemInventory == null) continue;
                     if (minerBlockValues.containsKey(itemInventory.getType().name())) {
-                        inventory.setItem(x, null);
+                        if (oreMax >= oreCount + itemInventory.getAmount()) {
+                            inventory.setItem(x, null);
+                            oreCount += itemInventory.getAmount();
+                        }
                     }
                 }
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
@@ -172,6 +175,12 @@ public class JobGuiListener implements Listener {
             if (itemInventory == null) continue;
             if (!minerBlockValues.containsKey(itemInventory.getType().name())) {
                 player.getInventory().addItem(itemInventory);
+            } else {
+                if (oreMax >= oreCount + itemInventory.getAmount()) {
+                    oreCount += itemInventory.getAmount();
+                } else {
+                    player.getInventory().addItem(itemInventory);
+                }
             }
         }
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));

@@ -5,6 +5,7 @@ import org.bukkit.entity.Item;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerDropItemEvent;
+import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
@@ -15,13 +16,13 @@ public class ItemsDrop implements Listener {
 
     @EventHandler
     public void onItemDrop(PlayerDropItemEvent event) {
-        Item item = event.getItemDrop();
+        ItemStack item = event.getItemDrop().getItemStack();
         Prisoner prisoner = PrisonLife.getPrisoner(event.getPlayer());
-        if ((item.getItemStack().getType() == Material.IRON_SHOVEL || item.getItemStack().getType() == Material.COCOA_BEANS) && prisoner.getJob() == Job.CLEANER) {
+        if ((item.getType() == Material.IRON_SHOVEL || item.getType() == Material.COCOA_BEANS) && prisoner.getJob() == Job.CLEANER) {
             event.setCancelled(true);
         }
         if (prisoner.getJob() == Job.MINER) {
-            if (minerBlockValues.containsKey(item.getItemStack().getType().name())) {
+            if (minerBlockValues.containsKey(item.getType().name()) || item.getType() == Material.IRON_PICKAXE) {
                 event.setCancelled(true);
             }
         }

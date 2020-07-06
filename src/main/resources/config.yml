@@ -24,6 +24,8 @@ messages:
 titles:
   orePointQuestion: "Сдать всю руду?"
   orePointPart: "Положите руду, которую хотите сдать"
+oreMax: 100
+ironMax: 100
 cleanerPointCount: 0
 jobLevels:
   miner: 2

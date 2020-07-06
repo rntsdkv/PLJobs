@@ -171,14 +171,17 @@ public class Main extends PLPlugin {
     }
 
     private void getGarbagePoints() {
-        for (String id : getConfig().getConfigurationSection("cleaners").getKeys(false)) {
+        ConfigurationSection section = getConfig().getConfigurationSection("cleaners");
+        if (section != null) {
+            for (String id : section.getKeys(false)) {
 
-            String world = getConfig().getString("cleaners." + id + ".world");
-            int x = getConfig().getInt("cleaners." + id + ".x");
-            int y = getConfig().getInt("cleaners." + id + ".y");
-            int z = getConfig().getInt("cleaners." + id + ".z");
+                String world = getConfig().getString("cleaners." + id + ".world");
+                int x = getConfig().getInt("cleaners." + id + ".x");
+                int y = getConfig().getInt("cleaners." + id + ".y");
+                int z = getConfig().getInt("cleaners." + id + ".z");
 
-            cleanerPoints.put(Integer.parseInt(id), new Location(Bukkit.getWorld(world), x, y, z));
+                cleanerPoints.put(Integer.parseInt(id), new Location(Bukkit.getWorld(world), x, y, z));
+            }
         }
     }
 

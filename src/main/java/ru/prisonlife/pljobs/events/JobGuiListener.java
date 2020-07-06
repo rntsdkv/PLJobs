@@ -11,6 +11,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryView;
 import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
@@ -160,6 +161,9 @@ public class JobGuiListener implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Player player = (Player) event.getPlayer();
+
+        InventoryView view = event.getView();
+        if (!view.getTitle().equals(plugin.getConfig().getString("titles.orePointPart"))) return;
 
         Inventory inventory = event.getInventory();
 

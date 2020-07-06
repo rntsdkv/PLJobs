@@ -128,6 +128,9 @@ public class Main extends PLPlugin {
             }
         }
 
+        getConfig().set("oreCount", oreCount);
+        getConfig().set("ironCount", ironCount);
+
         saveConfig();
     }
 
@@ -397,6 +400,13 @@ public class Main extends PLPlugin {
             int z = getConfig().getInt("ironStorage.z");
 
             ironStorage = new Location(world, x, y, z);
+        }
+
+        if (getConfig().getString("oreCount") != null) {
+            oreCount = getConfig().getInt("oreCount");
+        }
+        if (getConfig().getString("ironCount") != null) {
+            ironCount = getConfig().getInt("ironCount");
         }
 
         saveConfig();

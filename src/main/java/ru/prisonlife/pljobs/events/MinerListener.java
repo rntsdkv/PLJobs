@@ -63,7 +63,7 @@ public class MinerListener implements Listener {
 
         Location newLocation = new Location(world, x, y, z);
 
-        if (orePoint == newLocation) {
+        if (orePoint.equals(newLocation)) {
             Inventory inventory = newInventory();
             player.openInventory(inventory);
         }

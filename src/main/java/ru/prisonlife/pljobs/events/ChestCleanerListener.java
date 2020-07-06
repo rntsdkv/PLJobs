@@ -31,7 +31,7 @@ public class ChestCleanerListener implements Listener {
         Player player = event.getPlayer();
         FileConfiguration config = plugin.getConfig();
 
-        if (event.getAction() != Action.LEFT_CLICK_BLOCK) return;
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();
         String path = String.format("chest.%d&%d&%d", block.getX(), block.getY(), block.getZ());
 

@@ -215,8 +215,8 @@ public class Miner implements CommandExecutor  {
         int z = location.getBlockZ();
 
         config.set("miners." + name + ".point.x", x);
-        config.set("miners." + name + ".point.x", y);
-        config.set("miners." + name + ".point.x", z);
+        config.set("miners." + name + ".point.y", y);
+        config.set("miners." + name + ".point.z", z);
 
         player.sendMessage(colorize(config.getString("messages.pointSet")));
         plugin.saveConfig();
@@ -272,15 +272,16 @@ public class Miner implements CommandExecutor  {
             return true;
         }
 
-        for (int i = 2; i < strings.length; i++) {
+        if (config.getConfigurationSection("miners." + name + ".blocks") != null) {
+            config.set("miners." + name + ".blocks", null);
+        }
+
+        for (int i = 2; i <= strings.length; i++) {
             String id = strings[i].split(":")[0];
             int pr = Integer.parseInt(strings[i].split(":")[1]);
             config.set("miners." + name + ".blocks." + id, pr);
         }
 
-        if (config.getConfigurationSection("miners." + name + ".blocks") != null) {
-            config.set("miners." + name + ".blocks", null);
-        }
         sender.sendMessage(colorize(config.getString("messages.blocksSet")));
         plugin.saveConfig();
         return true;

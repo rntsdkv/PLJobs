@@ -40,8 +40,8 @@ public class ChestCleanerListener implements Listener {
 
         config.set(path + ".world", block.getWorld().getName());
         config.set(path + ".x", block.getX());
-        config.set(path + ".y", block.getX());
-        config.set(path + ".z", block.getX());
+        config.set(path + ".y", block.getY());
+        config.set(path + ".z", block.getZ());
         player.sendMessage(colorize("&l&6Вы установили мусорный бак!"));
         garbagePlayers.remove(player);
 

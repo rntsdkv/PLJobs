@@ -38,7 +38,9 @@ public class Main extends PLPlugin {
     public static Location ironStorage;
 
     public static int oreCount = 0;
+    public static int oreMax = 0;
     public static int ironCount = 0;
+    public static int ironMax = 0;
 
     @Override
     public String getPluginName() {
@@ -407,6 +409,12 @@ public class Main extends PLPlugin {
         }
         if (getConfig().getString("ironCount") != null) {
             ironCount = getConfig().getInt("ironCount");
+        }
+        if (getConfig().getString("oreMax") != null) {
+            oreMax = getConfig().getInt("oreMax");
+        }
+        if (getConfig().getString("ironMax") != null) {
+            ironMax = getConfig().getInt("ironMax");
         }
 
         saveConfig();

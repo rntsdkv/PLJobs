@@ -33,9 +33,12 @@ public class Main extends PLPlugin {
     public static Map<String, Integer> minerBlockValues = new HashMap<>();
     public static BukkitTask taskMine;
 
-    public static List<Location> orePoints = new ArrayList<>();
-    public static List<Location> oreStorages = new ArrayList<>();
-    public static List<Location> ironStorages = new ArrayList<>();
+    public static Location orePoint;
+    public static Location oreStorage;
+    public static Location ironStorage;
+
+    public static int oreCount = 0;
+    public static int ironCount = 0;
 
     @Override
     public String getPluginName() {
@@ -366,40 +369,34 @@ public class Main extends PLPlugin {
             }
         }
 
-        section = getConfig().getConfigurationSection("orePoints");
+        section = getConfig().getConfigurationSection("orePoint");
         if (section != null) {
-            for (String name : section.getKeys(false)) {
-                World world = Bukkit.getWorld(getConfig().getString("orePoints." + name + ".world"));
-                int x = getConfig().getInt("orePoints." + name + ".x");
-                int y = getConfig().getInt("orePoints." + name + ".y");
-                int z = getConfig().getInt("orePoints." + name + ".z");
+            World world = Bukkit.getWorld(getConfig().getString("orePoint.world"));
+            int x = getConfig().getInt("orePoint.x");
+            int y = getConfig().getInt("orePoint.y");
+            int z = getConfig().getInt("orePoint.z");
 
-                orePoints.add(new Location(world, x, y, z));
-            }
+            orePoint = new Location(world, x, y, z);
         }
 
-        section = getConfig().getConfigurationSection("oreStorages");
+        section = getConfig().getConfigurationSection("oreStorage");
         if (section != null) {
-            for (String name : section.getKeys(false)) {
-                World world = Bukkit.getWorld(getConfig().getString("oreStorages." + name + ".world"));
-                int x = getConfig().getInt("oreStorages." + name + ".x");
-                int y = getConfig().getInt("oreStorages." + name + ".y");
-                int z = getConfig().getInt("oreStorages." + name + ".z");
+            World world = Bukkit.getWorld(getConfig().getString("oreStorage.world"));
+            int x = getConfig().getInt("oreStorage.x");
+            int y = getConfig().getInt("oreStorage.y");
+            int z = getConfig().getInt("oreStorage.z");
 
-                oreStorages.add(new Location(world, x, y, z));
-            }
+            oreStorage = new Location(world, x, y, z);
         }
 
-        section = getConfig().getConfigurationSection("ironStorages");
+        section = getConfig().getConfigurationSection("ironStorage");
         if (section != null) {
-            for (String name : section.getKeys(false)) {
-                World world = Bukkit.getWorld(getConfig().getString("ironStorages." + name + ".world"));
-                int x = getConfig().getInt("ironStorages." + name + ".x");
-                int y = getConfig().getInt("ironStorages." + name + ".y");
-                int z = getConfig().getInt("ironStorages." + name + ".z");
+            World world = Bukkit.getWorld(getConfig().getString("ironStorage.world"));
+            int x = getConfig().getInt("ironStorage.x");
+            int y = getConfig().getInt("ironStorage.y");
+            int z = getConfig().getInt("ironStorage.z");
 
-                ironStorages.add(new Location(world, x, y, z));
-            }
+            ironStorage = new Location(world, x, y, z);
         }
 
         saveConfig();

@@ -346,21 +346,17 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        orePoints.add(location);
-
-        Random rand = new Random();
+        orePoint = location;
 
         World world = location.getWorld();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        int name = rand.nextInt(99999);
-
-        config.set("orePoints." + name + ".world", world.getName());
-        config.set("orePoints." + name + ".x", x);
-        config.set("orePoints." + name + ".y", y);
-        config.set("orePoints." + name + ".z", z);
+        config.set("orePoint.world", world.getName());
+        config.set("orePoint.x", x);
+        config.set("orePoint.y", y);
+        config.set("orePoint.z", z);
 
         player.sendMessage("Точка OrePoint установлена!");
         plugin.saveConfig();
@@ -376,25 +372,20 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        oreStorages.add(location);
-
-        Random rand = new Random();
+        oreStorage = location;
 
         World world = location.getWorld();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        int name = rand.nextInt(99999);
-
-        config.set("oreStorages." + name + ".world", world.getName());
-        config.set("oreStorages." + name + ".x", x);
-        config.set("oreStorages." + name + ".y", y);
-        config.set("oreStorages." + name + ".z", z);
+        config.set("oreStorage.world", world.getName());
+        config.set("oreStorage.x", x);
+        config.set("oreStorage.y", y);
+        config.set("oreStorage.z", z);
 
         player.sendMessage("Точка OreStorage установлена!");
         plugin.saveConfig();
-
         return true;
     }
 
@@ -407,25 +398,20 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        ironStorages.add(location);
-
-        Random rand = new Random();
+        ironStorage = location;
 
         World world = location.getWorld();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        int name = rand.nextInt(99999);
-
-        config.set("ironStorages." + name + ".world", world.getName());
-        config.set("ironStorages." + name + ".x", x);
-        config.set("ironStorages." + name + ".y", y);
-        config.set("ironStorages." + name + ".z", z);
+        config.set("ironStorage.world", world.getName());
+        config.set("ironStorage.x", x);
+        config.set("ironStorage.y", y);
+        config.set("ironStorage.z", z);
 
         player.sendMessage("Точка IronStorage установлена!");
         plugin.saveConfig();
-
         return true;
     }
 }

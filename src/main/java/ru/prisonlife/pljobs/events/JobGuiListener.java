@@ -137,7 +137,8 @@ public class JobGuiListener implements Listener {
             }
         }
 
-        if (viewTitle.equals(plugin.getConfig().getString("titles.orePointQuestion"))) {
+        //if (viewTitle.equals(plugin.getConfig().getString("titles.orePointQuestion"))) {
+        if (viewTitle.equals("Сдача руды")) {
             event.setCancelled(true);
             ItemStack item = event.getCurrentItem();
             Inventory inventory = player.getInventory();
@@ -154,7 +155,8 @@ public class JobGuiListener implements Listener {
                 }
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
             } else if (item.getType() == Material.RED_STAINED_GLASS) {
-                Inventory GUI = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointPart"));
+                //Inventory GUI = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointPart"));
+                Inventory GUI = Bukkit.createInventory(null, 9, "Положите руду для сдачи");
                 player.openInventory(GUI);
             }
         }
@@ -166,7 +168,8 @@ public class JobGuiListener implements Listener {
         Player player = (Player) event.getPlayer();
 
         InventoryView view = event.getView();
-        if (!view.getTitle().equals(plugin.getConfig().getString("titles.orePointPart"))) return;
+        //if (!view.getTitle().equals(plugin.getConfig().getString("titles.orePointPart"))) return;
+        if (!view.getTitle().equals("Положите руду для сдачи")) return;
 
         Inventory inventory = event.getInventory();
 

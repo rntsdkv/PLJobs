@@ -9,6 +9,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -52,9 +53,11 @@ public class MinerListener implements Listener {
     }
 
     @EventHandler
-    public void onMove(PlayerMoveEvent event) {
+    public void onSneak(PlayerToggleSneakEvent event) {
+        if (!event.isSneaking()) return;
+
         Player player = event.getPlayer();
-        Location location = event.getTo();
+        Location location = player.getLocation();
 
         World world = location.getWorld();
         int x = location.getBlockX();
@@ -70,7 +73,8 @@ public class MinerListener implements Listener {
     }
 
     private Inventory newInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointQuestion"));
+        //Inventory inventory = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointQuestion"));
+        Inventory inventory = Bukkit.createInventory(null, 9, "Сдача руды");
 
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS);
         ItemMeta yesMeta = yes.getItemMeta();
@@ -82,7 +86,7 @@ public class MinerListener implements Listener {
         ItemMeta noMeta = yes.getItemMeta();
         noMeta.setDisplayName(ChatColor.BLACK + "" + ChatColor.GREEN + "Сдать часть руды");
         no.setItemMeta(noMeta);
-        inventory.setItem(2, no);
+        inventory.setItem(6, no);
 
         return inventory;
     }

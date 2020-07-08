@@ -147,14 +147,16 @@ public class JobGuiListener implements Listener {
                     ItemStack itemInventory = inventory.getItem(x);
                     if (itemInventory == null) continue;
                     if (minerBlockValues.containsKey(itemInventory.getType().name())) {
-                        if (oreMax >= oreCount + itemInventory.getAmount()) {
+                        int amount = itemInventory.getAmount();
+                        if (oreStorage.canPuttedCount(amount)) {
                             inventory.setItem(x, null);
-                            oreCount += itemInventory.getAmount();
+                            oreStorage.putCount(amount);
                         }
                     }
                 }
                 player.closeInventory();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
+                oreStorage.updateText();
             } else if (item.getType() == Material.RED_STAINED_GLASS) {
                 //Inventory GUI = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointPart"));
                 Inventory GUI = Bukkit.createInventory(null, 9, "Положите руду для сдачи");
@@ -180,14 +182,16 @@ public class JobGuiListener implements Listener {
             if (!minerBlockValues.containsKey(itemInventory.getType().name())) {
                 player.getInventory().addItem(itemInventory);
             } else {
-                if (oreMax >= oreCount + itemInventory.getAmount()) {
-                    oreCount += itemInventory.getAmount();
+                int amount = itemInventory.getAmount();
+                if (oreStorage.canPuttedCount(amount)) {
+                    oreStorage.putCount(amount);
                 } else {
                     player.getInventory().addItem(itemInventory);
                 }
             }
         }
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
+        oreStorage.updateText();
     }
 
     private void creatingGarbage() {

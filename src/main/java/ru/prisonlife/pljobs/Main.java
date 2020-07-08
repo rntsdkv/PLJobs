@@ -33,11 +33,9 @@ public class Main extends PLPlugin {
     public static BukkitTask taskMine;
 
     public static Location orePoint;
-    public static Location oreStorage;
+    public static OreStorage oreStorage;
     public static Location ironStorage;
 
-    public static int oreCount = 0;
-    public static int oreMax = 0;
     public static int ironCount = 0;
     public static int ironMax = 0;
 
@@ -119,7 +117,23 @@ public class Main extends PLPlugin {
             }
         }
 
-        getConfig().set("oreCount", oreCount);
+        if (oreStorage != null) {
+            getConfig().set("oreCount", oreStorage.getCount());
+            getConfig().set("oreMax", oreStorage.getMaximum());
+
+            Location location = oreStorage.getLocation();
+
+            String world = location.getWorld().getName();
+            int x = location.getBlockX();
+            int y = location.getBlockY();
+            int z = location.getBlockZ();
+
+            getConfig().set("oreStorage.world", world);
+            getConfig().set("oreStorage.x", x);
+            getConfig().set("oreStorage.y", y);
+            getConfig().set("oreStorage.z", z);
+        }
+
         getConfig().set("ironCount", ironCount);
 
         saveConfig();
@@ -382,8 +396,11 @@ public class Main extends PLPlugin {
             int x = getConfig().getInt("oreStorage.x");
             int y = getConfig().getInt("oreStorage.y");
             int z = getConfig().getInt("oreStorage.z");
+            Location location = new Location(world, x, y, z);
 
-            oreStorage = new Location(world, x, y, z);
+            int count = getConfig().getInt("oreCount");
+            int max = getConfig().getInt("oreMax");
+            oreStorage = new OreStorage(location, count, max);
         }
 
         section = getConfig().getConfigurationSection("ironStorage");
@@ -396,14 +413,8 @@ public class Main extends PLPlugin {
             ironStorage = new Location(world, x, y, z);
         }
 
-        if (getConfig().getString("oreCount") != null) {
-            oreCount = getConfig().getInt("oreCount");
-        }
         if (getConfig().getString("ironCount") != null) {
             ironCount = getConfig().getInt("ironCount");
-        }
-        if (getConfig().getString("oreMax") != null) {
-            oreMax = getConfig().getInt("oreMax");
         }
         if (getConfig().getString("ironMax") != null) {
             ironMax = getConfig().getInt("ironMax");

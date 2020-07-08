@@ -374,20 +374,9 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        oreStorage = location;
-
-        World world = location.getWorld();
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
-
-        config.set("oreStorage.world", world.getName());
-        config.set("oreStorage.x", x);
-        config.set("oreStorage.y", y);
-        config.set("oreStorage.z", z);
+        oreStorage.setLocation(location);
 
         player.sendMessage("Точка OreStorage установлена!");
-        plugin.saveConfig();
         return true;
     }
 

@@ -201,17 +201,17 @@ public class Main extends PLPlugin {
         }
     }
 
-    private boolean isInside(Player player, Location minimum, Location maximum) {
+    private boolean isInside(Player player, Location pos1, Location pos2) {
         Location location = player.getLocation();
         World world = location.getWorld();
 
-        int minX = minimum.getBlockX();
-        int minY = minimum.getBlockY();
-        int minZ = minimum.getBlockZ();
+        int minX = Math.min(pos1.getBlockX(), pos2.getBlockX());
+        int minY = Math.min(pos1.getBlockY(), pos2.getBlockY());
+        int minZ = Math.min(pos1.getBlockZ(), pos2.getBlockZ());
 
-        int maxX = maximum.getBlockX();
-        int maxY = maximum.getBlockY();
-        int maxZ = maximum.getBlockZ();
+        int maxX = Math.max(pos1.getBlockX(), pos2.getBlockX());
+        int maxY = Math.max(pos1.getBlockY(), pos2.getBlockY());
+        int maxZ = Math.max(pos1.getBlockZ(), pos2.getBlockZ());
 
         return location.getWorld().equals(world)
                 && (location.getX() >= minX && location.getX() <= maxX)
@@ -242,7 +242,6 @@ public class Main extends PLPlugin {
         List<String> blocksID = new ArrayList<>();
         Map<String, Integer> blocks = new HashMap<>();
         int blocksCount = 0;
-
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
@@ -250,9 +249,9 @@ public class Main extends PLPlugin {
                 }
             }
         }
-
         for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
-            double x = getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount;
+            float pr = (float) getConfig().getInt("miners." + name + ".blocks." + id) / 100;
+            double x = (double) pr * blocksCount;
             blocks.put(id, (int) Math.round(x));
             blocksID.add(id);
         }
@@ -261,28 +260,22 @@ public class Main extends PLPlugin {
         int pointY = getConfig().getInt("miners." + name + ".point.y");
         int pointZ = getConfig().getInt("miners." + name + ".point.z");
         Location point = new Location(world, pointX, pointY, pointZ);
-
         for (Player player : getServer().getOnlinePlayers()) {
-            Location minimum = new Location(world, minX, minY, minZ);
-            Location maximum = new Location(world, maxX, maxY, maxZ);
-            if (isInside(player, minimum, maximum)) {
+            if (isInside(player, pos1, pos2)) {
                 player.teleport(point);
             }
         }
-
         Random rand = new Random();
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    String block;
-                    boolean c = false;
-                    while (!c) {
+                    while (true) {
                         int id = rand.nextInt(blocksID.size());
                         if (blocks.get(blocksID.get(id)) != 0) {
-                            block = blocksID.get(id);
+                            String block = blocksID.get(id);
                             world.getBlockAt(x, y, z).setType(Material.valueOf(block));
                             blocks.replace(block, blocks.get(block) - 1);
-                            c = true;
+                            break;
                         }
                     }
                 }

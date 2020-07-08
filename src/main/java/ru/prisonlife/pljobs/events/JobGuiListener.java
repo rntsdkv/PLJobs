@@ -153,6 +153,7 @@ public class JobGuiListener implements Listener {
                         }
                     }
                 }
+                player.closeInventory();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали руду!"));
             } else if (item.getType() == Material.RED_STAINED_GLASS) {
                 //Inventory GUI = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointPart"));

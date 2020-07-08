@@ -3,7 +3,9 @@ package ru.prisonlife.pljobs.events;
 
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -19,6 +21,7 @@ import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.currency.CurrencyManager;
+import ru.prisonlife.pljobs.GarbageChest;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.Optional;
@@ -44,7 +47,7 @@ public class GarbageListener implements Listener {
                 return;
             }
 
-            int price = plugin.getConfig().getInt("cleaner.garbagePickup");
+            int price = plugin.getConfig().getInt("cleaner.garbagePickup") * item.getAmount();
             playersSalary.replace(player, playersSalary.get(player) + price);
             player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price)));
 
@@ -86,23 +89,27 @@ public class GarbageListener implements Listener {
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         Action action = event.getAction();
 
+        Bukkit.broadcastMessage("throw1");
         if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
-
+            Bukkit.broadcastMessage("throw2");
             Block block = event.getClickedBlock();
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
+            Bukkit.broadcastMessage("throw3");
+            if (block.getType() != Material.CHEST || prisoner.getJob() != Job.CLEANER || itemInHand.getType() != Material.COCOA_BEANS) return;
+            Bukkit.broadcastMessage("throw4");
 
-            if (block.getType() == Material.CHEST && prisoner.getJob() == Job.CLEANER && itemInHand.getType() == Material.COCOA_BEANS) {
-
-                if (plugin.getConfig().getConfigurationSection("chests." + block.getX() + "&" + block.getY() + "&" + block.getZ()) != null) {
-                    int amount = itemInHand.getAmount();
-                    int price = plugin.getConfig().getInt("cleaner.garbageAway");
-                    playersSalary.replace(player, playersSalary.get(player) + price * amount);
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price * amount)));
-                    player.getInventory().setItemInMainHand(new ItemStack(Material.AIR));
-                    event.setCancelled(true);
-                }
-
-            }
+            String world = block.getWorld().getName();
+            int x = block.getX();
+            int y = block.getY();
+            int z = block.getZ();
+            if (!garbageChests.contains(new GarbageChest(world, x, y, z))) return;
+            Bukkit.broadcastMessage("throw5");
+            int amount = itemInHand.getAmount();
+            int price = plugin.getConfig().getInt("cleaner.garbageAway");
+            playersSalary.replace(player, playersSalary.get(player) + price * amount);
+            player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price * amount)));
+            player.getInventory().setItemInMainHand(null);
+            event.setCancelled(true);
         }
     }
 }

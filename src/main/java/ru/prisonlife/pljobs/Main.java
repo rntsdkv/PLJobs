@@ -1,6 +1,5 @@
 package ru.prisonlife.pljobs;
 
-import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.bukkit.selections.CuboidSelection;
 import com.sk89q.worldedit.bukkit.selections.Selection;
 import org.bukkit.*;
@@ -24,7 +23,7 @@ public class Main extends PLPlugin {
 
     public static Map<Player, Integer> playersSalary = new HashMap<>();
 
-    public static List<Location> garbageChests = new ArrayList<>();
+    public static List<GarbageChest> garbageChests = new ArrayList<>();
     public static Map<Integer, Location> cleanerPoints = new HashMap<>();
     public static Integer garbageCount = 0;
     public static BukkitTask taskGarbages;
@@ -115,18 +114,8 @@ public class Main extends PLPlugin {
         }
 
         if (!garbageChests.isEmpty()) {
-            for (Location garbage : garbageChests) {
-                World world = garbage.getWorld();
-                int x = garbage.getBlockX();
-                int y = garbage.getBlockY();
-                int z = garbage.getBlockZ();
-
-                String name = String.format("%d&%d&%d", x, y, z);
-
-                getConfig().set("garbageChests." + name + ".world", world.getName());
-                getConfig().set("garbageChests." + name + ".x", x);
-                getConfig().set("garbageChests." + name + ".y", y);
-                getConfig().set("garbageChests." + name + ".z", z);
+            for (GarbageChest garbage : garbageChests) {
+                garbage.loadToConfig(garbage);
             }
         }
 
@@ -242,11 +231,25 @@ public class Main extends PLPlugin {
         int z2 = getConfig().getInt("miners." + name + ".2.z");
         Location pos2 = new Location(world, x2, y2, z2);
 
-        Selection selection = new CuboidSelection(world, pos1, pos2);
+        int minX = Math.min(x1, x2);
+        int minY = Math.min(y1, y2);
+        int minZ = Math.min(z1, z2);
+
+        int maxX = Math.max(x1, x2);
+        int maxY = Math.max(y1, y2);
+        int maxZ = Math.max(z1, z2);
 
         List<String> blocksID = new ArrayList<>();
         Map<String, Integer> blocks = new HashMap<>();
-        int blocksCount = selection.getHeight() * selection.getWidth() * selection.getLength();
+        int blocksCount = 0;
+
+        for (int x = minX; x <= maxX; x++) {
+            for (int y = minY; y <= maxY; y++) {
+                for (int z = minZ; z <= maxZ; z++) {
+                    blocksCount ++;
+                }
+            }
+        }
 
         for (String id : getConfig().getConfigurationSection("miners." + name + ".blocks").getKeys(false)) {
             double x = getConfig().getInt("miners." + name + ".blocks." + id) / 100 * blocksCount;
@@ -254,21 +257,16 @@ public class Main extends PLPlugin {
             blocksID.add(id);
         }
 
-        int minX = selection.getMinimumPoint().getBlockX();
-        int minY = selection.getMinimumPoint().getBlockY();
-        int minZ = selection.getMinimumPoint().getBlockZ();
-
-        int maxX = selection.getMaximumPoint().getBlockX();
-        int maxY = selection.getMaximumPoint().getBlockY();
-        int maxZ = selection.getMaximumPoint().getBlockZ();
+        int pointX = getConfig().getInt("miners." + name + ".point.x");
+        int pointY = getConfig().getInt("miners." + name + ".point.y");
+        int pointZ = getConfig().getInt("miners." + name + ".point.z");
+        Location point = new Location(world, pointX, pointY, pointZ);
 
         for (Player player : getServer().getOnlinePlayers()) {
-            if (isInside(player, selection.getMinimumPoint(), selection.getMaximumPoint())) {
-                int x = getConfig().getInt("miners." + name + ".point.x");
-                int y = getConfig().getInt("miners." + name + ".point.y");
-                int z = getConfig().getInt("miners." + name + ".point.z");
-
-                player.teleport(new Location(world, x, y, z));
+            Location minimum = new Location(world, minX, minY, minZ);
+            Location maximum = new Location(world, maxX, maxY, maxZ);
+            if (isInside(player, minimum, maximum)) {
+                player.teleport(point);
             }
         }
 
@@ -276,20 +274,17 @@ public class Main extends PLPlugin {
         for (int x = minX; x <= maxX; x++) {
             for (int y = minY; y <= maxY; y++) {
                 for (int z = minZ; z <= maxZ; z++) {
-                    String block = null;
-                    while (true) {
-                        boolean c = false;
+                    String block;
+                    boolean c = false;
+                    while (!c) {
                         int id = rand.nextInt(blocksID.size());
                         if (blocks.get(blocksID.get(id)) != 0) {
                             block = blocksID.get(id);
+                            world.getBlockAt(x, y, z).setType(Material.valueOf(block));
+                            blocks.replace(block, blocks.get(block) - 1);
                             c = true;
                         }
-                        if (c) {
-                            break;
-                        }
                     }
-                    world.getBlockAt(x, y, z).setType(Material.valueOf(block));
-                    blocks.replace(block, blocks.get(block) - 1);
                 }
             }
         }
@@ -348,11 +343,12 @@ public class Main extends PLPlugin {
         section = getConfig().getConfigurationSection("garbageChests");
         if (section != null) {
             for (String id : section.getKeys(false)) {
-                World world = Bukkit.getWorld(getConfig().getString("garbageChests." + id + ".world"));
+                String world = getConfig().getString("garbageChests." + id + ".world");
                 int x = getConfig().getInt("garbageChests." + id + ".x");
                 int y = getConfig().getInt("garbageChests." + id + ".y");
                 int z = getConfig().getInt("garbageChests." + id + ".z");
-                garbageChests.add(new Location(world, x, y, z));
+                GarbageChest garbage = new GarbageChest(world, x, y, z);
+                garbageChests.add(garbage);
             }
         }
         getConfig().set("garbageChests", null);

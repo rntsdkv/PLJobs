@@ -11,11 +11,13 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import ru.prisonlife.pljobs.GarbageChest;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.Optional;
 
 import static ru.prisonlife.pljobs.Main.colorize;
+import static ru.prisonlife.pljobs.Main.garbageChests;
 import static ru.prisonlife.pljobs.commands.SetGarbage.garbagePlayers;
 
 public class ChestCleanerListener implements Listener {
@@ -29,40 +31,41 @@ public class ChestCleanerListener implements Listener {
     @EventHandler
     public void onChestClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
-        FileConfiguration config = plugin.getConfig();
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();
-        String path = String.format("chest.%d&%d&%d", block.getX(), block.getY(), block.getZ());
+
+        String world = block.getWorld().getName();
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
+
+        GarbageChest garbage = new GarbageChest(world, x, y, z);
 
         if (block.getType() != Material.CHEST || !garbagePlayers.contains(player)) return;
-        else if (Optional.ofNullable(config.getConfigurationSection(path)).isPresent()) return;
+        else if (garbageChests.contains(garbage)) return;
 
-        config.set(path + ".world", block.getWorld().getName());
-        config.set(path + ".x", block.getX());
-        config.set(path + ".y", block.getY());
-        config.set(path + ".z", block.getZ());
+        garbageChests.add(garbage);
         player.sendMessage(colorize("&l&6Вы установили мусорный бак!"));
         garbagePlayers.remove(player);
-
-        plugin.saveConfig();
     }
 
     @EventHandler
     public void onChestRemove(BlockBreakEvent event) {
         Block block = event.getBlock();
         Player player = event.getPlayer();
-        FileConfiguration config = plugin.getConfig();
+
+        String world = block.getWorld().getName();
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
+
+        GarbageChest garbage = new GarbageChest(world, x, y, z);
 
         if (block.getType() != Material.CHEST) return;
-        else if (!hasChestDataInConfig(config, block)) return;
+        else if (!garbageChests.contains(garbage)) return;
 
-        config.set("chest." + block.getLocation().toString(), null);
         player.sendMessage(colorize("&l&6Вы убрали мусорный бак!"));
-        plugin.saveConfig();
     }
 
-    private boolean hasChestDataInConfig(FileConfiguration configuration, Block block) {
-        return Optional.ofNullable(configuration.getConfigurationSection("chest." + block.getLocation())).isPresent();
-    }
 }

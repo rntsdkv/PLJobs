@@ -276,9 +276,10 @@ public class Miner implements CommandExecutor  {
             config.set("miners." + name + ".blocks", null);
         }
 
-        for (int i = 2; i <= strings.length; i++) {
-            String id = strings[i].split(":")[0];
-            int pr = Integer.parseInt(strings[i].split(":")[1]);
+        for (int i = 2; i < strings.length; i++) {
+            String[] id_pr = strings[i].split(":");
+            String id = id_pr[0];
+            int pr = Integer.parseInt(id_pr[1]);
             config.set("miners." + name + ".blocks." + id, pr);
         }
 

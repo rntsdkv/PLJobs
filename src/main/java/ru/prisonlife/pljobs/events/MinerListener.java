@@ -57,16 +57,23 @@ public class MinerListener implements Listener {
         if (!event.isSneaking()) return;
 
         Player player = event.getPlayer();
+        Prisoner prisoner = PrisonLife.getPrisoner(player);
+
+        if (prisoner.getJob() != Job.MINER) return;
+
         Location location = player.getLocation();
 
-        World world = location.getWorld();
+        String world = location.getWorld().getName();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        Location newLocation = new Location(world, x, y, z);
+        Bukkit.broadcastMessage(world);
+        Bukkit.broadcastMessage(String.valueOf(x));
+        Bukkit.broadcastMessage(String.valueOf(y));
+        Bukkit.broadcastMessage(String.valueOf(z));
 
-        if (orePoint.equals(newLocation)) {
+        if (orePoint.getWorld().getName().equals(world) && orePoint.getX() == x && orePoint.getY() == y && orePoint.getZ() == z) {
             Inventory inventory = newInventory();
             player.openInventory(inventory);
         }
@@ -83,7 +90,7 @@ public class MinerListener implements Listener {
         inventory.setItem(2, yes);
 
         ItemStack no = new ItemStack(Material.RED_STAINED_GLASS);
-        ItemMeta noMeta = yes.getItemMeta();
+        ItemMeta noMeta = no.getItemMeta();
         noMeta.setDisplayName(ChatColor.BLACK + "" + ChatColor.GREEN + "Сдать часть руды");
         no.setItemMeta(noMeta);
         inventory.setItem(6, no);

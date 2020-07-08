@@ -9,6 +9,7 @@ import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
+import ru.prisonlife.util.InventoryUtil;
 
 import static ru.prisonlife.pljobs.Main.colorize;
 
@@ -29,7 +30,7 @@ public class GetSalary implements CommandExecutor {
         Player player = (Player) commandSender;
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
-        if (!prisoner.hasOverdueJobSalary()) {
+        if (!prisoner.hasOverdueJobSalary() || prisoner.getOverdueJobSalary() == 0) {
             player.sendMessage(colorize(plugin.getConfig().getString("messages.prisonerHasNotOverdueSalary")));
             return true;
         }
@@ -44,9 +45,8 @@ public class GetSalary implements CommandExecutor {
             return true;
         }
 
-        for (ItemStack item : PrisonLife.getCurrencyManager().createMoney(prisoner.getOverdueJobSalary())) {
-            player.getInventory().addItem(item);
-        }
+        InventoryUtil.putItemStacks(player.getInventory(), PrisonLife.getCurrencyManager().createMoney(prisoner.getOverdueJobSalary()));
+
         player.sendMessage(colorize(plugin.getConfig().getString("messages.getOverdueSalary")));
         return true;
     }

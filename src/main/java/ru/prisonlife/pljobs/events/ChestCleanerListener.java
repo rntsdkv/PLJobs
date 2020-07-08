@@ -43,7 +43,7 @@ public class ChestCleanerListener implements Listener {
         GarbageChest garbage = new GarbageChest(world, x, y, z);
 
         if (block.getType() != Material.CHEST || !garbagePlayers.contains(player)) return;
-        else if (garbageChests.contains(garbage)) return;
+        else if (garbage.exists()) return;
 
         garbageChests.add(garbage);
         player.sendMessage(colorize("&l&6Вы установили мусорный бак!"));
@@ -63,7 +63,7 @@ public class ChestCleanerListener implements Listener {
         GarbageChest garbage = new GarbageChest(world, x, y, z);
 
         if (block.getType() != Material.CHEST) return;
-        else if (!garbageChests.contains(garbage)) return;
+        else if (!garbage.exists()) return;
 
         player.sendMessage(colorize("&l&6Вы убрали мусорный бак!"));
     }

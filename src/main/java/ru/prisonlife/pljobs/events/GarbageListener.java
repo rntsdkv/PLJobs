@@ -102,7 +102,9 @@ public class GarbageListener implements Listener {
             int x = block.getX();
             int y = block.getY();
             int z = block.getZ();
-            if (!garbageChests.contains(new GarbageChest(world, x, y, z))) return;
+            GarbageChest garbageChest = new GarbageChest(world, x, y, z);
+            if (!garbageChest.exists()) return;
+
             Bukkit.broadcastMessage("throw5");
             int amount = itemInHand.getAmount();
             int price = plugin.getConfig().getInt("cleaner.garbageAway");

@@ -115,7 +115,7 @@ public class Main extends PLPlugin {
 
         if (!garbageChests.isEmpty()) {
             for (GarbageChest garbage : garbageChests) {
-                garbage.loadToConfig(garbage);
+                garbage.loadToConfig();
             }
         }
 

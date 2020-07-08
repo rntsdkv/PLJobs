@@ -89,14 +89,10 @@ public class GarbageListener implements Listener {
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         Action action = event.getAction();
 
-        Bukkit.broadcastMessage("throw1");
         if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
-            Bukkit.broadcastMessage("throw2");
             Block block = event.getClickedBlock();
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
-            Bukkit.broadcastMessage("throw3");
             if (block.getType() != Material.CHEST || prisoner.getJob() != Job.CLEANER || itemInHand.getType() != Material.COCOA_BEANS) return;
-            Bukkit.broadcastMessage("throw4");
 
             String world = block.getWorld().getName();
             int x = block.getX();
@@ -105,7 +101,6 @@ public class GarbageListener implements Listener {
             GarbageChest garbageChest = new GarbageChest(world, x, y, z);
             if (!garbageChest.exists()) return;
 
-            Bukkit.broadcastMessage("throw5");
             int amount = itemInHand.getAmount();
             int price = plugin.getConfig().getInt("cleaner.garbageAway");
             playersSalary.replace(player, playersSalary.get(player) + price * amount);

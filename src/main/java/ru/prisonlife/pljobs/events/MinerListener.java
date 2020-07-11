@@ -19,6 +19,8 @@ import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
 
+import java.util.HashMap;
+
 import static ru.prisonlife.pljobs.Main.*;
 import static ru.prisonlife.pljobs.commands.Miner.furnacesPlayer;
 
@@ -28,6 +30,8 @@ import static ru.prisonlife.pljobs.commands.Miner.furnacesPlayer;
  */
 
 public class MinerListener implements Listener {
+
+    public static HashMap<Player, Integer> oreMelting = new HashMap<>();
 
     private final PLPlugin plugin;
     public MinerListener(PLPlugin plugin) {
@@ -134,25 +138,56 @@ public class MinerListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockClick(PlayerInteractEvent event) {
+    public void onBlockClick(PlayerInteractEvent event) throws InterruptedException {
         Player player = event.getPlayer();
+        Prisoner prisoner = PrisonLife.getPrisoner(player);
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();
-
-        if (block.getType() != Material.FURNACE) return;
-        if (!furnacesPlayer.contains(player)) return;
-
-        furnacesPlayer.remove(player);
 
         Location location = player.getLocation();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        if (!minerFurnaces.contains(new Location(location.getWorld(), x, y, z))) {
-            minerFurnaces.add(new Location(location.getWorld(), x, y, z));
-            player.sendMessage(colorize("&l&6Вы установили плавильню!"));
+        if (block.getType() != Material.FURNACE) return;
+        if (furnacesPlayer.contains(player)) {
+            event.setCancelled(true);
+            furnacesPlayer.remove(player);
+
+            if (!minerFurnaces.contains(new Location(location.getWorld(), x, y, z))) {
+                minerFurnaces.add(new Location(location.getWorld(), x, y, z));
+                player.sendMessage(colorize("&l&6Вы установили плавильню!"));
+            }
+            return;
+        }
+
+        if (minerFurnaces.contains(new Location(location.getWorld(), x, y, z))) {
+            event.setCancelled(true);
+            if (prisoner.getJob() != Job.MINER) return;
+
+            ItemStack item = player.getInventory().getItemInMainHand();
+
+            if (item.getType() != Material.IRON_ORE) return;
+
+            if (oreMelting.containsKey(player)) return;
+
+            item.setAmount(item.getAmount() - 1);
+            oreMelting.put(player, 6);
+
+            while (true) {
+                oreMelting.replace(player, oreMelting.get(player) - 1);
+                if (oreMelting.get(player) == 0) break;
+                else if (oreMelting.get(player) == 5) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.WHITE + "|||||"));
+                else if (oreMelting.get(player) == 4) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "|" + ChatColor.WHITE + "||||"));
+                else if (oreMelting.get(player) == 3) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||" + ChatColor.WHITE + "|||"));
+                else if (oreMelting.get(player) == 2) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "|||" + ChatColor.WHITE + "||"));
+                else if (oreMelting.get(player) == 1) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||||" + ChatColor.WHITE + "|"));
+                Thread.sleep(1000);
+            }
+
+            oreMelting.remove(player);
+            player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
         }
     }
 }

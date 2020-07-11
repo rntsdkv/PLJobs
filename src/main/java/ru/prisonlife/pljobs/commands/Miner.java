@@ -39,29 +39,18 @@ public class Miner implements CommandExecutor  {
         FileConfiguration config = plugin.getConfig();
         if (strings.length > 0) {
 
-            if (strings[0].equals("pos1") || strings[0].equals("pos2")) {
-                minerPosition(commandSender, strings, config);
-            } else if (strings[0].equals("create")) {
-                minerCreate(commandSender, strings, config);
-            } else if (strings[0].equals("timer")) {
-                minerTimer(commandSender, strings, config);
-            } else if (strings[0].equals("setpoint")) {
-                minerSetPoint(commandSender, strings, config);
-            } else if (strings[0].equals("delete")) {
-                minerDelete(commandSender, strings, config);
-            } else if (strings[0].equals("set")) {
-                minerSet(commandSender, strings, config);
-            } else if (strings[0].equals("on")) {
-                minerOn(commandSender, strings, config);
-            } else if (strings[0].equals("off")) {
-                minerOff(commandSender, strings, config);
-            } else if (strings[0].equals("orepoint")) {
-                minerOrePoint(commandSender, strings, config);
-            } else if (strings[0].equals("orestorage")) {
-                minerOreStorage(commandSender, strings, config);
-            } else if (strings[0].equals("ironstorage")) {
-                minerIronStorage(commandSender, strings, config);
-            }
+            if (strings[0].equals("pos1") || strings[0].equals("pos2")) minerPosition(commandSender, strings, config);
+            else if (strings[0].equals("create")) minerCreate(commandSender, strings, config);
+            else if (strings[0].equals("timer")) minerTimer(commandSender, strings, config);
+            else if (strings[0].equals("setpoint")) minerSetPoint(commandSender, strings, config);
+            else if (strings[0].equals("delete")) minerDelete(commandSender, strings, config);
+            else if (strings[0].equals("set")) minerSet(commandSender, strings, config);
+            else if (strings[0].equals("on")) minerOn(commandSender, strings, config);
+            else if (strings[0].equals("off")) minerOff(commandSender, strings, config);
+            else if (strings[0].equals("orepoint")) minerOrePoint(commandSender, config);
+            else if (strings[0].equals("orestorage")) minerOreStorage(commandSender, strings, config);
+            else if (strings[0].equals("ironstorage")) minerIronStorage(commandSender, strings, config);
+            else if (strings[0].equals("furnace")) minerFurnace(commandSender);
         }
         return true;
     }
@@ -339,7 +328,7 @@ public class Miner implements CommandExecutor  {
         return true;
     }
     
-    private boolean minerOrePoint(CommandSender sender, String[] strings, FileConfiguration config) {
+    private boolean minerOrePoint(CommandSender sender, FileConfiguration config) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(config.getString("messages.wrongSender"));
             return true;

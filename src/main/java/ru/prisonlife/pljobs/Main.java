@@ -435,6 +435,19 @@ public class Main extends PLPlugin {
             ironMax = getConfig().getInt("ironMax");
         }
 
+        section = getConfig().getConfigurationSection("furnaces");
+        if (section != null) {
+            for (String name : section.getKeys(false)) {
+                World world = Bukkit.getWorld(getConfig().getString("furnaces." + name + ".world"));
+                int x = getConfig().getInt("furnaces." + name + ".x");
+                int y = getConfig().getInt("furnaces." + name + ".y");
+                int z = getConfig().getInt("furnaces." + name + ".z");
+
+                minerFurnaces.add(new Location(world, x, y, z));
+            }
+            getConfig().set("furnaces", null);
+        }
+
         saveConfig();
     }
 

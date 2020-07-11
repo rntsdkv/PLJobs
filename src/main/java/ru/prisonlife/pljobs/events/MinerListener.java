@@ -62,13 +62,11 @@ public class MinerListener implements Listener {
         if (prisoner.getJob() != Job.MINER) return;
 
         Location location = player.getLocation();
-
-        String world = location.getWorld().getName();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        if (orePoint.getWorld().getName().equals(world) && orePoint.getX() == x && orePoint.getY() == y && orePoint.getZ() == z) {
+        if (orePoint.getX() == x && orePoint.getY() == y && orePoint.getZ() == z) {
             Inventory inventory = newInventory();
             player.openInventory(inventory);
             return;

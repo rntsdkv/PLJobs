@@ -348,12 +348,12 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        orePoint = location;
-
         World world = location.getWorld();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
+
+        orePoint = new Location(world, x, y, z);
 
         config.set("orePoint.world", world.getName());
         config.set("orePoint.x", x);

@@ -119,8 +119,8 @@ public class MinerListener implements Listener {
     }
 
     private Inventory newInventory() {
-        Inventory inventory = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointQuestion"));
-        //Inventory inventory = Bukkit.createInventory(null, 9, "Сдача руды");
+        //Inventory inventory = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointQuestion"));
+        Inventory inventory = Bukkit.createInventory(null, 9, "Сдача руды");
 
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS);
         ItemMeta yesMeta = yes.getItemMeta();
@@ -151,6 +151,7 @@ public class MinerListener implements Listener {
         int z = location.getBlockZ();
 
         if (block.getType() != Material.FURNACE) return;
+
         if (furnacesPlayer.contains(player)) {
             event.setCancelled(true);
             furnacesPlayer.remove(player);
@@ -177,12 +178,15 @@ public class MinerListener implements Listener {
 
             while (true) {
                 oreMelting.replace(player, oreMelting.get(player) - 1);
-                if (oreMelting.get(player) == 0) break;
-                else if (oreMelting.get(player) == 5) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.WHITE + "|||||"));
-                else if (oreMelting.get(player) == 4) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "|" + ChatColor.WHITE + "||||"));
-                else if (oreMelting.get(player) == 3) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||" + ChatColor.WHITE + "|||"));
-                else if (oreMelting.get(player) == 2) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "|||" + ChatColor.WHITE + "||"));
-                else if (oreMelting.get(player) == 1) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||||" + ChatColor.WHITE + "|"));
+                if (oreMelting.get(player) == 0) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "IIIII"));
+                    break;
+                }
+                else if (oreMelting.get(player) == 5) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.WHITE + "IIIII"));
+                else if (oreMelting.get(player) == 4) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "I" + ChatColor.WHITE + "IIII"));
+                else if (oreMelting.get(player) == 3) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "II" + ChatColor.WHITE + "III"));
+                else if (oreMelting.get(player) == 2) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "III" + ChatColor.WHITE + "II"));
+                else if (oreMelting.get(player) == 1) player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "IIII" + ChatColor.WHITE + "I"));
                 Thread.sleep(1000);
             }
 

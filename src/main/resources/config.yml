@@ -38,6 +38,8 @@ cleaner:
   garbageCountPerCleaner: 10
   garbageSpawnIntensity: 10
 miner:
+  metal:
+    forOne: 5
   blocks:
     IRON_ORE: 1
     DIAMOND_ORE: 4

@@ -68,20 +68,47 @@ public class MinerListener implements Listener {
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
-        Bukkit.broadcastMessage(world);
-        Bukkit.broadcastMessage(String.valueOf(x));
-        Bukkit.broadcastMessage(String.valueOf(y));
-        Bukkit.broadcastMessage(String.valueOf(z));
-
         if (orePoint.getWorld().getName().equals(world) && orePoint.getX() == x && orePoint.getY() == y && orePoint.getZ() == z) {
             Inventory inventory = newInventory();
             player.openInventory(inventory);
+            return;
+        }
+
+        Location oreStorageLocation = oreStorage.getLocation();
+
+        if (oreStorageLocation.getBlockX() == x && oreStorageLocation.getBlockY() == y && oreStorageLocation.getBlockZ() == z) {
+            int count = plugin.getConfig().getInt("miner.metal.forOne");
+            if (oreStorage.getCount() == 0) {
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "На складе нет руды!"));
+                return;
+            } else if (oreStorage.getCount() - count >= 0) {
+                if (player.getInventory().contains(Material.IRON_ORE)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "У вас уже есть руда!"));
+                    return;
+                }
+                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, count));
+                oreStorage.putCount(-5);
+                oreStorage.updateText();
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
+                return;
+            } else {
+                if (player.getInventory().contains(Material.IRON_ORE)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "У вас уже есть руда!"));
+                    return;
+                }
+                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, oreStorage.getCount()));
+                oreStorage.setCount(0);
+                oreStorage.updateText();
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
+                return;
+            }
+
         }
     }
 
     private Inventory newInventory() {
-        //Inventory inventory = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointQuestion"));
-        Inventory inventory = Bukkit.createInventory(null, 9, "Сдача руды");
+        Inventory inventory = Bukkit.createInventory(null, 9, plugin.getConfig().getString("titles.orePointQuestion"));
+        //Inventory inventory = Bukkit.createInventory(null, 9, "Сдача руды");
 
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS);
         ItemMeta yesMeta = yes.getItemMeta();

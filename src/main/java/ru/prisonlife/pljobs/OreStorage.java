@@ -63,7 +63,8 @@ public class OreStorage {
         } else {
             ArmorStand entity = (ArmorStand) location.getWorld().spawnEntity(location, EntityType.ARMOR_STAND);
             entity.setCustomNameVisible(true);
-            entity.setCustomName("Руда\n\n" + "Количество на складе: " + count + "\nМаксимальное количество: " + maximum);
+            entity.setSmall(true);
+            entity.setCustomName("Руда " + count + "/" + maximum);
             entity.setGravity(false);
             entity.setVisible(false);
             uuid = entity.getUniqueId();
@@ -71,6 +72,6 @@ public class OreStorage {
     }
 
     public void updateText() {
-        Bukkit.getEntity(uuid).setCustomName("Руда\n\n" + "Количество на складе: " + count + "\nМаксимальное количество: " + maximum);
+        Bukkit.getEntity(uuid).setCustomName("Руда " + count + "/" + maximum);
     }
 }

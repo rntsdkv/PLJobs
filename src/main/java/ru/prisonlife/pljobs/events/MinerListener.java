@@ -7,8 +7,9 @@ import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
@@ -19,6 +20,7 @@ import ru.prisonlife.Prisoner;
 import ru.prisonlife.plugin.PLPlugin;
 
 import static ru.prisonlife.pljobs.Main.*;
+import static ru.prisonlife.pljobs.commands.Miner.furnacesPlayer;
 
 /**
  * @author rntsdkv
@@ -39,6 +41,14 @@ public class MinerListener implements Listener {
 
         Block block = event.getBlock();
         String blockType = block.getType().name();
+
+        if (block.getType() == Material.FURNACE) {
+            Location location = block.getLocation();
+            if (!minerFurnaces.contains(location)) return;
+            minerFurnaces.remove(location);
+            player.sendMessage(colorize("&l&6Вы убрали плавильню!"));
+            return;
+        }
 
         event.setDropItems(false);
 
@@ -121,5 +131,28 @@ public class MinerListener implements Listener {
         inventory.setItem(6, no);
 
         return inventory;
+    }
+
+    @EventHandler
+    public void onBlockClick(PlayerInteractEvent event) {
+        Player player = event.getPlayer();
+
+        if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
+        Block block = event.getClickedBlock();
+
+        if (block.getType() != Material.FURNACE) return;
+        if (!furnacesPlayer.contains(player)) return;
+
+        furnacesPlayer.remove(player);
+
+        Location location = player.getLocation();
+        int x = location.getBlockX();
+        int y = location.getBlockY();
+        int z = location.getBlockZ();
+
+        if (!minerFurnaces.contains(new Location(location.getWorld(), x, y, z))) {
+            minerFurnaces.add(new Location(location.getWorld(), x, y, z));
+            player.sendMessage(colorize("&l&6Вы установили плавильню!"));
+        }
     }
 }

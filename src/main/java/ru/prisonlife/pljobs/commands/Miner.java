@@ -28,6 +28,7 @@ public class Miner implements CommandExecutor  {
 
     public static Map<Player, Location> position1 = new HashMap<>();
     public static Map<Player, Location> position2 = new HashMap<>();
+    public static List<Player> furnacesPlayer = new ArrayList<>();
 
     private PLPlugin plugin;
     public Miner(PLPlugin main) {
@@ -48,9 +49,9 @@ public class Miner implements CommandExecutor  {
             else if (strings[0].equals("on")) minerOn(commandSender, strings, config);
             else if (strings[0].equals("off")) minerOff(commandSender, strings, config);
             else if (strings[0].equals("orepoint")) minerOrePoint(commandSender, config);
-            else if (strings[0].equals("orestorage")) minerOreStorage(commandSender, strings, config);
-            else if (strings[0].equals("ironstorage")) minerIronStorage(commandSender, strings, config);
-            else if (strings[0].equals("furnace")) minerFurnace(commandSender);
+            else if (strings[0].equals("orestorage")) minerOreStorage(commandSender, config);
+            else if (strings[0].equals("ironstorage")) minerIronStorage(commandSender, config);
+            else if (strings[0].equals("furnace")) minerFurnace(commandSender, config);
         }
         return true;
     }
@@ -354,7 +355,7 @@ public class Miner implements CommandExecutor  {
         return true;
     }
 
-    private boolean minerOreStorage(CommandSender sender, String[] strings, FileConfiguration config) {
+    private boolean minerOreStorage(CommandSender sender, FileConfiguration config) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(config.getString("messages.wrongSender"));
             return true;
@@ -369,7 +370,7 @@ public class Miner implements CommandExecutor  {
         return true;
     }
 
-    private boolean minerIronStorage(CommandSender sender, String[] strings, FileConfiguration config) {
+    private boolean minerIronStorage(CommandSender sender, FileConfiguration config) {
         if (!(sender instanceof Player)) {
             sender.sendMessage(config.getString("messages.wrongSender"));
             return true;
@@ -392,6 +393,19 @@ public class Miner implements CommandExecutor  {
 
         player.sendMessage("Точка IronStorage установлена!");
         plugin.saveConfig();
+        return true;
+    }
+
+    private boolean minerFurnace(CommandSender sender, FileConfiguration config) {
+        if (!(sender instanceof Player)) {
+            sender.sendMessage(config.getString("messages.wrongSender"));
+            return true;
+        }
+
+        Player player = (Player) sender;
+
+        player.sendMessage(colorize("&l&6Теперь тыкните по печке"));
+        furnacesPlayer.add(player);
         return true;
     }
 }

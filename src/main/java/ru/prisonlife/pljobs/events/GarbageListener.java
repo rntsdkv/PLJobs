@@ -89,7 +89,7 @@ public class GarbageListener implements Listener {
         Prisoner prisoner = PrisonLife.getPrisoner(player);
         Action action = event.getAction();
 
-        if (action == Action.LEFT_CLICK_BLOCK || action == Action.RIGHT_CLICK_BLOCK) {
+        if (action == Action.RIGHT_CLICK_BLOCK) {
             Block block = event.getClickedBlock();
             ItemStack itemInHand = player.getInventory().getItemInMainHand();
             if (block.getType() != Material.CHEST || prisoner.getJob() != Job.CLEANER || itemInHand.getType() != Material.COCOA_BEANS) return;

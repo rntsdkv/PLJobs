@@ -35,6 +35,7 @@ public class Main extends PLPlugin {
     public static Location orePoint;
     public static OreStorage oreStorage;
     public static Location ironStorage;
+    public static List<Location> minerFurnaces = new ArrayList<>();
 
     public static int ironCount = 0;
     public static int ironMax = 0;
@@ -135,6 +136,20 @@ public class Main extends PLPlugin {
         }
 
         getConfig().set("ironCount", ironCount);
+
+        if (minerFurnaces.size() != 0) {
+            for (Location furnace : minerFurnaces) {
+                int x = furnace.getBlockX();
+                int y = furnace.getBlockY();
+                int z = furnace.getBlockZ();
+
+                String name = String.format("%d&%d&%d", x, y, z);
+                getConfig().set("furnaces." + name + ".world", furnace.getWorld().getName());
+                getConfig().set("furnaces." + name + ".x", x);
+                getConfig().set("furnaces." + name + ".y", y);
+                getConfig().set("furnaces." + name + ".y", y);
+            }
+        }
 
         saveConfig();
     }

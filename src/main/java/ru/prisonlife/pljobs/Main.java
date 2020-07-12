@@ -34,12 +34,9 @@ public class Main extends PLPlugin {
 
     public static Location orePoint;
     public static OreStorage oreStorage;
-    public static Location ironStorage;
+    public static IronStorage ironStorage;
     public static List<Furnace> minerFurnaces = new ArrayList<>();
     public static BukkitTask taskOreMelting;
-
-    public static int ironCount = 0;
-    public static int ironMax = 0;
 
     @Override
     public String getPluginName() {
@@ -136,8 +133,6 @@ public class Main extends PLPlugin {
             getConfig().set("oreStorage.z", z);
         }
 
-        getConfig().set("ironCount", ironCount);
-
         if (minerFurnaces.size() != 0) {
             for (Furnace furnace : minerFurnaces) {
                 int x = furnace.getX();
@@ -149,6 +144,15 @@ public class Main extends PLPlugin {
                 getConfig().set("furnaces." + name + ".y", y);
                 getConfig().set("furnaces." + name + ".y", y);
             }
+        }
+
+        if (ironStorage != null) {
+            getConfig().set("ironCount", ironStorage.getCount());
+            Location ironStorageLocation = ironStorage.getLocation();
+            getConfig().set("ironStorage.world", ironStorageLocation.getWorld().getName());
+            getConfig().set("ironStorage.x", ironStorageLocation.getBlockX());
+            getConfig().set("ironStorage.y", ironStorageLocation.getBlockY());
+            getConfig().set("ironStorage.z", ironStorageLocation.getBlockZ());
         }
 
         saveConfig();
@@ -420,19 +424,14 @@ public class Main extends PLPlugin {
 
         section = getConfig().getConfigurationSection("ironStorage");
         if (section != null) {
+            int count = getConfig().getInt("ironCount");
+            int maximum = getConfig().getInt("ironMax");
             World world = Bukkit.getWorld(getConfig().getString("ironStorage.world"));
             int x = getConfig().getInt("ironStorage.x");
             int y = getConfig().getInt("ironStorage.y");
             int z = getConfig().getInt("ironStorage.z");
 
-            ironStorage = new Location(world, x, y, z);
-        }
-
-        if (getConfig().getString("ironCount") != null) {
-            ironCount = getConfig().getInt("ironCount");
-        }
-        if (getConfig().getString("ironMax") != null) {
-            ironMax = getConfig().getInt("ironMax");
+            ironStorage = new IronStorage(count, maximum, new Location(world, x, y, z));
         }
 
         section = getConfig().getConfigurationSection("furnaces");

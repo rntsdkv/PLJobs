@@ -13,6 +13,8 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
+import ru.prisonlife.pljobs.IronStorage;
+import ru.prisonlife.pljobs.OreStorage;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.*;
@@ -364,7 +366,8 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        oreStorage.setLocation(location);
+        if (oreStorage != null) oreStorage.setLocation(location);
+        else oreStorage = new OreStorage(location, 0, config.getInt("oreMax"));
 
         player.sendMessage("Точка OreStorage установлена!");
         return true;
@@ -379,20 +382,10 @@ public class Miner implements CommandExecutor  {
         Player player = (Player) sender;
         Location location = player.getLocation();
 
-        ironStorage = location;
-
-        World world = location.getWorld();
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
-
-        config.set("ironStorage.world", world.getName());
-        config.set("ironStorage.x", x);
-        config.set("ironStorage.y", y);
-        config.set("ironStorage.z", z);
+        if (ironStorage != null) ironStorage.setLocation(location);
+        else ironStorage = new IronStorage(0, config.getInt("ironMax"), location);
 
         player.sendMessage("Точка IronStorage установлена!");
-        plugin.saveConfig();
         return true;
     }
 

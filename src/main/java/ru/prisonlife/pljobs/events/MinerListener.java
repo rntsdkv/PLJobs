@@ -20,7 +20,9 @@ import ru.prisonlife.Prisoner;
 import ru.prisonlife.pljobs.Furnace;
 import ru.prisonlife.plugin.PLPlugin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import static ru.prisonlife.pljobs.Main.*;
 import static ru.prisonlife.pljobs.commands.Miner.furnacesPlayer;
@@ -79,14 +81,13 @@ public class MinerListener implements Listener {
         Player player = event.getPlayer();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
-        if (prisoner.getJob() != Job.MINER) return;
-
         Location location = player.getLocation();
         int x = location.getBlockX();
         int y = location.getBlockY();
         int z = location.getBlockZ();
 
         if (orePoint.getX() == x && orePoint.getY() == y && orePoint.getZ() == z) {
+            if (prisoner.getJob() != Job.MINER) return;
             Inventory inventory = newInventory();
             player.openInventory(inventory);
             return;
@@ -95,6 +96,7 @@ public class MinerListener implements Listener {
         Location oreStorageLocation = oreStorage.getLocation();
 
         if (oreStorageLocation.getBlockX() == x && oreStorageLocation.getBlockY() == y && oreStorageLocation.getBlockZ() == z) {
+            if (prisoner.getJob() != Job.MINER) return;
             int count = plugin.getConfig().getInt("miner.metal.forOne");
             if (oreStorage.getCount() == 0) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "На складе нет руды!"));
@@ -122,6 +124,58 @@ public class MinerListener implements Listener {
             }
 
         }
+
+        Location ironStorageLocation = ironStorage.getLocation();
+
+        if (ironStorageLocation.getBlockX() == x && ironStorageLocation.getBlockY() == y && ironStorageLocation.getBlockZ() == z) {
+            if (prisoner.getJob() == Job.MINER) {
+                int price = plugin.getConfig().getInt("miner.iron.priceForMiner");
+                Inventory inventory = Bukkit.createInventory(null, 9, "Склад железа");
+
+                ItemStack sell = new ItemStack(Material.GREEN_STAINED_GLASS);
+                ItemMeta sellMeta = sell.getItemMeta();
+                sellMeta.setDisplayName(ChatColor.GREEN + "Сдать железо");
+                List<String> lore = new ArrayList<>();
+                lore.add(ChatColor.GREEN + String.format("%d$/слиток", price));
+                sellMeta.setLore(lore);
+                sell.setItemMeta(sellMeta);
+                inventory.setItem(4, sell);
+
+                player.openInventory(inventory);
+            } else if (prisoner.getJob() == Job.NONE) {
+                int price = plugin.getConfig().getInt("miner.iron.priceForBuyer");
+                List<String> lore = new ArrayList<>();
+                Inventory inventory = Bukkit.createInventory(null, 9, "Склад железа");
+
+                ItemStack iron1 = new ItemStack(Material.IRON_INGOT, 1);
+                ItemMeta iron1Meta = iron1.getItemMeta();
+                iron1Meta.setDisplayName(ChatColor.GREEN + "Купить слиток");
+                lore.add(ChatColor.GREEN + String.format("за %d$", price));
+                iron1Meta.setLore(lore);
+                iron1.setItemMeta(iron1Meta);
+                inventory.setItem(2, iron1);
+
+                ItemStack iron5 = new ItemStack(Material.IRON_INGOT, 5);
+                ItemMeta iron5Meta = iron5.getItemMeta();
+                iron5Meta.setDisplayName(ChatColor.GREEN + "Купить пять слитков");
+                lore.clear();
+                lore.add(ChatColor.GREEN + String.format("за %d$", price * 5));
+                iron5Meta.setLore(lore);
+                iron5.setItemMeta(iron5Meta);
+                inventory.setItem(4, iron5);
+
+                ItemStack iron10 = new ItemStack(Material.IRON_INGOT, 10);
+                ItemMeta iron10Meta = iron5.getItemMeta();
+                iron5Meta.setDisplayName(ChatColor.GREEN + "Купить десять слитков");
+                lore.clear();
+                lore.add(ChatColor.GREEN + String.format("за %d$", price * 10));
+                iron10Meta.setLore(lore);
+                iron10.setItemMeta(iron10Meta);
+                inventory.setItem(6, iron10);
+
+                player.openInventory(inventory);
+            }
+        }
     }
 
     private Inventory newInventory() {
@@ -130,7 +184,7 @@ public class MinerListener implements Listener {
 
         ItemStack yes = new ItemStack(Material.GREEN_STAINED_GLASS);
         ItemMeta yesMeta = yes.getItemMeta();
-        yesMeta.setDisplayName(ChatColor.BLACK + "" + ChatColor.GREEN + "Сдать всю руду");
+        yesMeta.setDisplayName(ChatColor.GREEN + "Сдать всю руду");
         yes.setItemMeta(yesMeta);
         inventory.setItem(2, yes);
 

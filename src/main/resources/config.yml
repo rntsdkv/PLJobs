@@ -40,6 +40,9 @@ cleaner:
 miner:
   metal:
     forOne: 5
+  iron:
+    priceForMiner: 2
+    priceForBuyer: 1
   blocks:
     IRON_ORE: 1
     DIAMOND_ORE: 4

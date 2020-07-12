@@ -3,7 +3,7 @@ package ru.prisonlife.pljobs;
 import static ru.prisonlife.pljobs.Main.minerFurnaces;
 
 /**
- * @author 79869
+ * @author rntsdkv
  * @project PLJobs
  */
 

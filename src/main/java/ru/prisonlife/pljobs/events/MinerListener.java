@@ -69,7 +69,7 @@ public class MinerListener implements Listener {
 
         int price = minerBlockValues.get(blockType);
 
-        playersSalary.put(player, playersSalary.get(player) + price);
+        playersSalary.replace(player, playersSalary.get(player) + price);
         player.getInventory().addItem(new ItemStack(block.getType(), 1));
         player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + String.format("+%d$", price)));
     }
@@ -130,6 +130,8 @@ public class MinerListener implements Listener {
         if (ironStorageLocation.getBlockX() == x && ironStorageLocation.getBlockY() == y && ironStorageLocation.getBlockZ() == z) {
             if (prisoner.getJob() == Job.MINER) {
                 int price = plugin.getConfig().getInt("miner.iron.priceForMiner");
+
+                /*
                 Inventory inventory = Bukkit.createInventory(null, 9, "Склад железа");
 
                 ItemStack sell = new ItemStack(Material.GREEN_STAINED_GLASS);
@@ -142,6 +144,23 @@ public class MinerListener implements Listener {
                 inventory.setItem(4, sell);
 
                 player.openInventory(inventory);
+                 */
+
+                for (int i = 0; i <= player.getInventory().getSize(); i++) {
+                    ItemStack itemStack = player.getInventory().getItem(i);
+                    if (itemStack.getType() == Material.IRON_INGOT) return;
+                    if (!ironStorage.canPuttedCount(itemStack.getAmount())) {
+                        itemStack.setAmount(ironStorage.getMaximum() - ironStorage.getCount());
+                        playersSalary.replace(player, playersSalary.get(player) + price * (ironStorage.getMaximum() - ironStorage.getCount()));
+                        ironStorage.setCount(ironStorage.getMaximum());
+                        break;
+                    } else {
+                        ironStorage.putCount(itemStack.getAmount());
+                        playersSalary.replace(player, playersSalary.get(player) + price * itemStack.getAmount());
+                        itemStack.setAmount(0);
+                    }
+                }
+                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали железо!"));
             } else if (prisoner.getJob() == Job.NONE) {
                 int price = plugin.getConfig().getInt("miner.iron.priceForBuyer");
                 List<String> lore = new ArrayList<>();

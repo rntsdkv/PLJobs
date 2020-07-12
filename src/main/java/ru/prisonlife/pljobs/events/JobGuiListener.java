@@ -151,6 +151,10 @@ public class JobGuiListener implements Listener {
                         if (oreStorage.canPuttedCount(amount)) {
                             inventory.setItem(x, null);
                             oreStorage.putCount(amount);
+                        } else {
+                            itemInventory.setAmount(oreStorage.getMaximum() - oreStorage.getCount());
+                            oreStorage.setCount(oreStorage.getMaximum());
+                            break;
                         }
                     }
                 }

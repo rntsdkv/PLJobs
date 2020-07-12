@@ -168,6 +168,16 @@ public class JobGuiListener implements Listener {
             }
         }
 
+        if (viewTitle.equals("Склад железа")) {
+            event.setCancelled(true);
+            ItemStack item = event.getCurrentItem();
+            Inventory inventory = player.getInventory();
+
+            if (item.getType() != Material.IRON_INGOT) return;
+
+            if (item.getAmount() == 1) return;
+        }
+
     }
 
     @EventHandler

@@ -101,23 +101,20 @@ public class MinerListener implements Listener {
             if (oreStorage.getCount() == 0) {
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "На складе нет руды!"));
                 return;
-            } else if (oreStorage.getCount() - count >= 0) {
-                if (player.getInventory().contains(Material.IRON_ORE)) {
-                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "У вас уже есть руда!"));
-                    return;
-                }
-                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, count));
-                oreStorage.putCount(-5);
-                oreStorage.updateText();
-                player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
-                return;
             } else {
                 if (player.getInventory().contains(Material.IRON_ORE)) {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "У вас уже есть руда!"));
                     return;
                 }
-                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, oreStorage.getCount()));
-                oreStorage.setCount(0);
+                if (!oreStorage.canPuttedCount(-5)) {
+                    player.getInventory().addItem(new ItemStack(Material.IRON_ORE, oreStorage.getCount()));
+                    oreStorage.setCount(0);
+                    oreStorage.updateText();
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
+                    return;
+                }
+                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, 5));
+                oreStorage.setCount(5);
                 oreStorage.updateText();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
                 return;
@@ -160,6 +157,7 @@ public class MinerListener implements Listener {
                         itemStack.setAmount(0);
                     }
                 }
+                ironStorage.updateText();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Вы сдали железо!"));
             } else if (prisoner.getJob() == Job.NONE) {
                 int price = plugin.getConfig().getInt("miner.iron.priceForBuyer");

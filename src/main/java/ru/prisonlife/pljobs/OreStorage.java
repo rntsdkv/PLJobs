@@ -43,7 +43,7 @@ public class OreStorage {
     }
 
     public boolean canPuttedCount(int i) {
-        if (count + i > maximum) return false;
+        if (count + i > maximum || count + i < 0) return false;
         return true;
     }
 

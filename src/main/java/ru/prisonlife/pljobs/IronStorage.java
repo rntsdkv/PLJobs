@@ -43,7 +43,7 @@ public class IronStorage {
     }
 
     public void updateText() {
-        Bukkit.getEntity(uuid).setCustomName("Руда " + count + "/" + maximum);
+        Bukkit.getEntity(uuid).setCustomName("Железо " + count + "/" + maximum);
     }
 
     public Location getLocation() { return location; }
@@ -63,7 +63,7 @@ public class IronStorage {
     }
 
     public boolean canPuttedCount(int i) {
-        if (count + i > maximum) return false;
+        if (count + i > maximum || count + i < 0) return false;
         return true;
     }
 

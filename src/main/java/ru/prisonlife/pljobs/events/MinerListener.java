@@ -17,6 +17,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
+import ru.prisonlife.pljobs.Furnace;
 import ru.prisonlife.plugin.PLPlugin;
 
 import java.util.HashMap;
@@ -47,9 +48,14 @@ public class MinerListener implements Listener {
         String blockType = block.getType().name();
 
         if (block.getType() == Material.FURNACE) {
-            Location location = block.getLocation();
-            if (!minerFurnaces.contains(location)) return;
-            minerFurnaces.remove(location);
+            int x = block.getX();
+            int y = block.getY();
+            int z = block.getZ();
+
+            Furnace furnace = new Furnace(x, y, z);
+            if (!furnace.exists()) return;
+
+            minerFurnaces.remove(furnace.find());
             player.sendMessage(colorize("&l&6Вы убрали плавильню!"));
             return;
         }
@@ -156,8 +162,9 @@ public class MinerListener implements Listener {
             event.setCancelled(true);
             furnacesPlayer.remove(player);
 
-            if (!minerFurnaces.contains(new Location(location.getWorld(), x, y, z))) {
-                minerFurnaces.add(new Location(location.getWorld(), x, y, z));
+            Furnace furnace = new Furnace(x, y, z);
+            if (!furnace.exists()) {
+                minerFurnaces.add(furnace);
                 player.sendMessage(colorize("&l&6Вы установили плавильню!"));
             }
             return;

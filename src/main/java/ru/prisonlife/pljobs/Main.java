@@ -36,6 +36,7 @@ public class Main extends PLPlugin {
     public static OreStorage oreStorage;
     public static Location ironStorage;
     public static List<Furnace> minerFurnaces = new ArrayList<>();
+    public static BukkitTask taskOreMelting;
 
     public static int ironCount = 0;
     public static int ironMax = 0;

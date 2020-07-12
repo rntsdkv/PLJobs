@@ -158,11 +158,12 @@ public class MinerListener implements Listener {
 
         if (block.getType() != Material.FURNACE) return;
 
+        Furnace furnace = new Furnace(x, y, z);
+
         if (furnacesPlayer.contains(player)) {
             event.setCancelled(true);
             furnacesPlayer.remove(player);
 
-            Furnace furnace = new Furnace(x, y, z);
             if (!furnace.exists()) {
                 minerFurnaces.add(furnace);
                 player.sendMessage(colorize("&l&6Вы установили плавильню!"));
@@ -170,7 +171,7 @@ public class MinerListener implements Listener {
             return;
         }
 
-        if (minerFurnaces.contains(new Location(location.getWorld(), x, y, z))) {
+        if (furnace.exists()) {
             event.setCancelled(true);
             if (prisoner.getJob() != Job.MINER) return;
 
@@ -183,6 +184,29 @@ public class MinerListener implements Listener {
             item.setAmount(item.getAmount() - 1);
             oreMelting.put(player, 6);
 
+            if (oreMelting.size() == 1) {
+                taskOreMelting = Bukkit.getScheduler().runTaskTimer(plugin, () -> {
+                    for (Player p : oreMelting.keySet()) {
+                        oreMelting.replace(p, oreMelting.get(p) - 1);
+
+                        int s = oreMelting.get(p);
+
+                        if (s == 5) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.WHITE + "||||||||||"));
+                        else if (s == 4) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||" + ChatColor.WHITE + "||||||||"));
+                        else if (s == 3) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||||" + ChatColor.WHITE + "||||||"));
+                        else if (s == 2) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||||||" + ChatColor.WHITE + "||||"));
+                        else if (s == 1) p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||||||||" + ChatColor.WHITE + "||"));
+                        else if (s == 0) {
+                            p.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "||||||||||"));
+                            p.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
+                            oreMelting.remove(p);
+                            if (oreMelting.size() == 0) taskOreMelting.cancel();
+                        }
+                    }
+                }, 0, 20);
+            }
+
+            /*
             while (true) {
                 oreMelting.replace(player, oreMelting.get(player) - 1);
                 if (oreMelting.get(player) == 0) {
@@ -198,7 +222,7 @@ public class MinerListener implements Listener {
             }
 
             oreMelting.remove(player);
-            player.getInventory().addItem(new ItemStack(Material.IRON_INGOT, 1));
+             */
         }
     }
 }

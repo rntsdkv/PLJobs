@@ -22,9 +22,8 @@ public class ItemsDrop implements Listener {
             event.setCancelled(true);
         }
         if (prisoner.getJob() == Job.MINER) {
-            if (minerBlockValues.containsKey(item.getType().name()) || item.getType() == Material.IRON_PICKAXE) {
-                event.setCancelled(true);
-            }
+            if (minerBlockValues.containsKey(item.getType().name()) || item.getType() == Material.IRON_PICKAXE) event.setCancelled(true);
+            if (item.getType() == Material.IRON_ORE || item.getType() == Material.IRON_INGOT) event.setCancelled(true);
         }
     }
 }

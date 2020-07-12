@@ -16,6 +16,7 @@ import org.bukkit.inventory.ItemStack;
 import ru.prisonlife.Job;
 import ru.prisonlife.PrisonLife;
 import ru.prisonlife.Prisoner;
+import ru.prisonlife.currency.CurrencyManager;
 import ru.prisonlife.database.json.ItemSlot;
 import ru.prisonlife.plugin.PLPlugin;
 import ru.prisonlife.util.InventoryUtil;
@@ -170,12 +171,54 @@ public class JobGuiListener implements Listener {
 
         if (viewTitle.equals("Склад железа")) {
             event.setCancelled(true);
+            player.closeInventory();
             ItemStack item = event.getCurrentItem();
             Inventory inventory = player.getInventory();
+            int price = plugin.getConfig().getInt("miner.iron.priceForBuyer");
+            CurrencyManager currencyManager = PrisonLife.getCurrencyManager();
 
             if (item.getType() != Material.IRON_INGOT) return;
 
-            if (item.getAmount() == 1) return;
+            if (item.getAmount() == 1) {
+                if (!ironStorage.canPuttedCount(-1)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "На складе не хватает железа!"));
+                    return;
+                }
+                if (!currencyManager.hasMoneyEquivalent(inventory, price)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Недостаточно денег!"));
+                    return;
+                }
+                currencyManager.reduceMoney(inventory, price);
+                inventory.addItem(new ItemStack(Material.IRON_INGOT, 1));
+                ironStorage.putCount(-1);
+                ironStorage.updateText();
+            } else if (item.getAmount() == 5) {
+                if (!ironStorage.canPuttedCount(-5)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "На складе не хватает железа!"));
+                    return;
+                }
+                if (!currencyManager.hasMoneyEquivalent(inventory, price * 5)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Недостаточно денег!"));
+                    return;
+                }
+                currencyManager.reduceMoney(inventory, price * 5);
+                inventory.addItem(new ItemStack(Material.IRON_INGOT, 5));
+                ironStorage.putCount(-5);
+                ironStorage.updateText();
+            } else if (item.getAmount() == 10) {
+                if (!ironStorage.canPuttedCount(-10)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "На складе не хватает железа!"));
+                    return;
+                }
+                if (!currencyManager.hasMoneyEquivalent(inventory, price * 10)) {
+                    player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.RED + "Недостаточно денег!"));
+                    return;
+                }
+                currencyManager.reduceMoney(inventory, price * 10);
+                inventory.addItem(new ItemStack(Material.IRON_INGOT, 10));
+                ironStorage.putCount(-10);
+                ironStorage.updateText();
+            }
         }
 
     }

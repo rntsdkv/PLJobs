@@ -114,7 +114,7 @@ public class MinerListener implements Listener {
                     return;
                 }
                 player.getInventory().addItem(new ItemStack(Material.IRON_ORE, 5));
-                oreStorage.setCount(5);
+                oreStorage.putCount(-5);
                 oreStorage.updateText();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
                 return;
@@ -145,7 +145,7 @@ public class MinerListener implements Listener {
 
                 for (int i = 0; i <= player.getInventory().getSize(); i++) {
                     ItemStack itemStack = player.getInventory().getItem(i);
-                    if (itemStack.getType() == Material.IRON_INGOT) return;
+                    if (itemStack.getType() != Material.IRON_INGOT) return;
                     if (!ironStorage.canPuttedCount(itemStack.getAmount())) {
                         itemStack.setAmount(ironStorage.getMaximum() - ironStorage.getCount());
                         playersSalary.replace(player, playersSalary.get(player) + price * (ironStorage.getMaximum() - ironStorage.getCount()));

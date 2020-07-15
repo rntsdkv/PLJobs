@@ -215,17 +215,16 @@ public class MinerListener implements Listener {
     }
 
     @EventHandler
-    public void onBlockClick(PlayerInteractEvent event) throws InterruptedException {
+    public void onBlockClick(PlayerInteractEvent event) {
         Player player = event.getPlayer();
         Prisoner prisoner = PrisonLife.getPrisoner(player);
 
         if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         Block block = event.getClickedBlock();
 
-        Location location = player.getLocation();
-        int x = location.getBlockX();
-        int y = location.getBlockY();
-        int z = location.getBlockZ();
+        int x = block.getX();
+        int y = block.getY();
+        int z = block.getZ();
 
         if (block.getType() != Material.FURNACE) return;
 

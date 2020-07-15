@@ -113,7 +113,7 @@ public class MinerListener implements Listener {
                     player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
                     return;
                 }
-                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, 5));
+                player.getInventory().addItem(new ItemStack(Material.IRON_ORE, count));
                 oreStorage.putCount(-5);
                 oreStorage.updateText();
                 player.spigot().sendMessage(ChatMessageType.ACTION_BAR, TextComponent.fromLegacyText(ChatColor.GREEN + "Теперь переплавьте руду!"));
@@ -150,9 +150,11 @@ public class MinerListener implements Listener {
                         itemStack.setAmount(ironStorage.getMaximum() - ironStorage.getCount());
                         playersSalary.replace(player, playersSalary.get(player) + price * (ironStorage.getMaximum() - ironStorage.getCount()));
                         ironStorage.setCount(ironStorage.getMaximum());
+                        ironStorage.updateText();
                         break;
                     } else {
                         ironStorage.putCount(itemStack.getAmount());
+                        ironStorage.updateText();
                         playersSalary.replace(player, playersSalary.get(player) + price * itemStack.getAmount());
                         itemStack.setAmount(0);
                     }

@@ -18,7 +18,7 @@ public class IronStorage {
     private int count;
     private int maximum;
     private Location location;
-    private UUID uuid;
+    public UUID uuid;
 
     public IronStorage(int count, int maximum, Location location) {
         this.count = count;

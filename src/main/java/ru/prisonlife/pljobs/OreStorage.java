@@ -18,7 +18,7 @@ public class OreStorage {
     private Location location;
     private int count;
     private int maximum;
-    private UUID uuid;
+    public UUID uuid;
 
     public OreStorage(Location location, int count, int maximum) {
         this.location = location;

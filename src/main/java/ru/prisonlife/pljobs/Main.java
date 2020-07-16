@@ -131,6 +131,8 @@ public class Main extends PLPlugin {
             getConfig().set("oreStorage.x", x);
             getConfig().set("oreStorage.y", y);
             getConfig().set("oreStorage.z", z);
+            
+            if (oreStorage.uuid != null) getConfig().set("oreStorage.uuid", oreStorage.uuid);
         }
 
         if (minerFurnaces.size() != 0) {
@@ -153,6 +155,8 @@ public class Main extends PLPlugin {
             getConfig().set("ironStorage.x", ironStorageLocation.getBlockX());
             getConfig().set("ironStorage.y", ironStorageLocation.getBlockY());
             getConfig().set("ironStorage.z", ironStorageLocation.getBlockZ());
+
+            if (ironStorage.uuid != null) getConfig().set("ironStorage.uuid", ironStorage.uuid);
         }
 
         saveConfig();
@@ -420,6 +424,7 @@ public class Main extends PLPlugin {
             int count = getConfig().getInt("oreCount");
             int max = getConfig().getInt("oreMax");
             oreStorage = new OreStorage(location, count, max);
+            if (getConfig().getString("oreStorage.uuid") != null) oreStorage.uuid = (UUID) getConfig().get("oreStorage.uuid");
         }
 
         section = getConfig().getConfigurationSection("ironStorage");
@@ -432,6 +437,7 @@ public class Main extends PLPlugin {
             int z = getConfig().getInt("ironStorage.z");
 
             ironStorage = new IronStorage(count, maximum, new Location(world, x, y, z));
+            if (getConfig().getString("ironStorage.uuid") != null) ironStorage.uuid = (UUID) getConfig().get("ironStorage.uuid");
         }
 
         section = getConfig().getConfigurationSection("furnaces");
